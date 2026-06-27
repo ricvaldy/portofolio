@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portofolio pribadi Rizky Pratama, web developer pemula yang belajar HTML, CSS, dan JavaScript." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Rizky Pratama" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta property="og:title" content="Portofolio Pribadi | Rizky Pratama" />
+  <meta property="og:description" content="Website portofolio pribadi sederhana, modern, responsif, dan ringan." />
+  <meta property="og:type" content="website" />
+  <title>Portofolio Pribadi | Rizky Pratama</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Navigasi utama">
+      <a class="logo" href="#">Rizky<span>.</span></a>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Buka menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">Tentang</a></li>
+        <li><a href="#skills">Skill</a></li>
+        <li><a href="#projects">Proyek</a></li>
+        <li><a href="#contact">Kontak</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="hero-text">
+        <p class="eyebrow">Halo, saya</p>
+        <h1>Rizky Pratama</h1>
+        <p>
+          Web developer pemula yang sedang belajar membuat website modern,
+          responsif, dan mudah digunakan.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#projects">Lihat Proyek</a>
+          <a class="btn btn-secondary" href="#contact">Hubungi Saya</a>
+        </div>
+      </div>
+
+      <div class="profile-card" aria-label="Ringkasan profil">
+        <div class="avatar">RP</div>
+        <h2>Frontend Learner</h2>
+        <p>HTML, CSS, JavaScript</p>
+        <div class="status">
+          <span></span>
+          Siap belajar dan membuat proyek baru
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="about">
+      <div class="container two-column">
+        <div>
+          <p class="section-label">Tentang Saya</p>
+          <h2>Membangun website sederhana dengan tampilan yang rapi.</h2>
+        </div>
+        <p>
+          Saya tertarik pada desain web yang bersih, cepat dibuka, dan nyaman
+          dilihat di layar HP maupun laptop. Saat ini saya fokus mempelajari
+          dasar-dasar HTML untuk struktur, CSS untuk tampilan, dan JavaScript
+          untuk interaksi.
+        </p>
+      </div>
+    </section>
+
+    <section class="section container" id="skills">
+      <p class="section-label">Skill</p>
+      <h2>Hal yang sedang saya pelajari</h2>
+
+      <div class="skills-grid">
+        <article class="info-card">
+          <h3>HTML</h3>
+          <p>Membuat struktur halaman yang jelas, rapi, dan mudah dipahami.</p>
+        </article>
+        <article class="info-card">
+          <h3>CSS</h3>
+          <p>Mengatur warna, layout, spacing, dan tampilan responsif.</p>
+        </article>
+        <article class="info-card">
+          <h3>JavaScript</h3>
+          <p>Menambahkan interaksi sederhana seperti menu dan tombol aksi.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section container" id="projects">
+      <p class="section-label">Proyek</p>
+      <h2>Contoh proyek sederhana</h2>
+
+      <div class="projects-grid">
+        <article class="project-card">
+          <span>01</span>
+          <h3>Landing Page Bisnis</h3>
+          <p>Halaman promosi singkat untuk usaha kecil dengan tombol ajakan bertindak.</p>
+        </article>
+        <article class="project-card">
+          <span>02</span>
+          <h3>Blog Pribadi</h3>
+          <p>Template artikel sederhana yang enak dibaca di desktop dan mobile.</p>
+        </article>
+        <article class="project-card">
+          <span>03</span>
+          <h3>Halaman Kontak</h3>
+          <p>Form kontak ringan dengan validasi dasar dan tampilan bersih.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section contact" id="contact">
+      <div class="container contact-box">
+        <div>
+          <p class="section-label">Kontak</p>
+          <h2>Mari terhubung</h2>
+          <p>
+            Klik tombol di samping untuk melihat contoh interaksi JavaScript
+            sederhana.
+          </p>
+        </div>
+        <button class="btn btn-primary" id="contactButton">Kirim Pesan</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Rizky Pratama. Dibuat dengan HTML, CSS, dan JavaScript.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
