@@ -3,137 +3,310 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Portofolio pribadi Rizky Pratama, web developer pemula yang belajar HTML, CSS, dan JavaScript." />
+  <meta name="description" content="Portofolio Ricvaldy Timotius Tarigan, mahasiswa Teknik Elektro Universitas Diponegoro dengan minat pada IoT, teknologi, pemrograman, desain, komunikasi, kepemimpinan, dan inovasi." />
+  <meta name="keywords" content="Ricvaldy Timotius Tarigan, portofolio, Teknik Elektro, Universitas Diponegoro, IoT, Python, C++, web development, mahasiswa elektro" />
   <meta name="robots" content="index, follow" />
-  <meta name="author" content="Rizky Pratama" />
-  <meta name="theme-color" content="#2563eb" />
-  <meta property="og:title" content="Portofolio Pribadi | Rizky Pratama" />
-  <meta property="og:description" content="Website portofolio pribadi sederhana, modern, responsif, dan ringan." />
+  <meta name="author" content="Ricvaldy Timotius Tarigan" />
+  <meta name="theme-color" content="#102033" />
+  <meta property="og:title" content="Ricvaldy Timotius Tarigan | Electrical Engineering Portfolio" />
+  <meta property="og:description" content="Portofolio profesional Ricvaldy Timotius Tarigan, mahasiswa Teknik Elektro UNDIP yang tertarik pada teknologi, IoT, riset, pemrograman, dan kepemimpinan." />
   <meta property="og:type" content="website" />
-  <title>Portofolio Pribadi | Rizky Pratama</title>
+  <meta property="og:url" content="https://ricvaldy.github.io/portofolio/" />
+  <link rel="canonical" href="https://ricvaldy.github.io/portofolio/" />
   <link rel="stylesheet" href="style.css" />
+  <title>Ricvaldy Timotius Tarigan | Electrical Engineering Portfolio</title>
 </head>
 <body>
+  <a class="skip-link" href="#main">Lewati ke konten utama</a>
+
   <header class="site-header">
     <nav class="navbar container" aria-label="Navigasi utama">
-      <a class="logo" href="#">Rizky<span>.</span></a>
+      <a class="brand" href="#home" aria-label="Ricvaldy Timotius Tarigan">
+        <span class="brand-mark">RT</span>
+        <span>Ricvaldy</span>
+      </a>
 
-      <button class="menu-toggle" id="menuToggle" aria-label="Buka menu" aria-expanded="false">
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Buka menu navigasi" aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
       </button>
 
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#about">Tentang</a></li>
-        <li><a href="#skills">Skill</a></li>
-        <li><a href="#projects">Proyek</a></li>
-        <li><a href="#contact">Kontak</a></li>
-      </ul>
+      <div class="nav-panel" id="navPanel">
+        <ul class="nav-links">
+          <li><a class="nav-link active" href="#home">Home</a></li>
+          <li><a class="nav-link" href="#about">About</a></li>
+          <li><a class="nav-link" href="#skills">Skills</a></li>
+          <li><a class="nav-link" href="#experience">Experience</a></li>
+          <li><a class="nav-link" href="#achievements">Achievements</a></li>
+          <li><a class="nav-link" href="#projects">Projects</a></li>
+          <li><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ganti mode warna">
+          <span class="theme-toggle-icon" aria-hidden="true"></span>
+        </button>
+      </div>
     </nav>
   </header>
 
-  <main>
-    <section class="hero container">
-      <div class="hero-text">
-        <p class="eyebrow">Halo, saya</p>
-        <h1>Rizky Pratama</h1>
-        <p>
-          Web developer pemula yang sedang belajar membuat website modern,
-          responsif, dan mudah digunakan.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#projects">Lihat Proyek</a>
-          <a class="btn btn-secondary" href="#contact">Hubungi Saya</a>
-        </div>
-      </div>
+  <main id="main">
+    <section class="hero section-reveal" id="home">
+      <div class="hero-shape hero-shape-one" aria-hidden="true"></div>
+      <div class="hero-shape hero-shape-two" aria-hidden="true"></div>
 
-      <div class="profile-card" aria-label="Ringkasan profil">
-        <div class="avatar">RP</div>
-        <h2>Frontend Learner</h2>
-        <p>HTML, CSS, JavaScript</p>
-        <div class="status">
-          <span></span>
-          Siap belajar dan membuat proyek baru
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Personal Portfolio</p>
+          <h1>Ricvaldy Timotius Tarigan</h1>
+          <p class="hero-title">Electrical Engineering Student | Tech Enthusiast | Future Innovator</p>
+          <p class="hero-description">
+            Mahasiswa Teknik Elektro Universitas Diponegoro yang tertarik pada IoT,
+            pemrograman, desain, komunikasi, kepemimpinan, dan pengembangan organisasi.
+            Saya ingin terus berkembang di bidang elektro, riset, dan teknologi melalui
+            karya yang berdampak.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#projects">Lihat Portofolio</a>
+            <a class="btn btn-secondary" href="#contact">Hubungi Saya</a>
+          </div>
         </div>
+
+        <aside class="profile-card" aria-label="Ringkasan profil Ricvaldy">
+          <div class="profile-top">
+            <div class="profile-avatar" aria-hidden="true">RT</div>
+            <div>
+              <p class="profile-label">Available for growth</p>
+              <h2>Electrical Engineering</h2>
+            </div>
+          </div>
+
+          <p class="profile-summary">
+            Exploring electronics, programming, leadership, and innovation with
+            curiosity and consistent learning.
+          </p>
+
+          <div class="profile-list">
+            <div>
+              <span>University</span>
+              <strong>Universitas Diponegoro</strong>
+            </div>
+            <div>
+              <span>Focus</span>
+              <strong>IoT, Research, Technology</strong>
+            </div>
+            <div>
+              <span>Mindset</span>
+              <strong>Curious, collaborative, adaptive</strong>
+            </div>
+          </div>
+        </aside>
       </div>
     </section>
 
-    <section class="section section-soft" id="about">
-      <div class="container two-column">
+    <section class="section section-soft section-reveal" id="about">
+      <div class="container about-grid">
         <div>
-          <p class="section-label">Tentang Saya</p>
-          <h2>Membangun website sederhana dengan tampilan yang rapi.</h2>
+          <p class="section-label">About Me</p>
+          <h2>Belajar, bertumbuh, dan membangun solusi teknologi yang bermakna.</h2>
         </div>
-        <p>
-          Saya tertarik pada desain web yang bersih, cepat dibuka, dan nyaman
-          dilihat di layar HP maupun laptop. Saat ini saya fokus mempelajari
-          dasar-dasar HTML untuk struktur, CSS untuk tampilan, dan JavaScript
-          untuk interaksi.
-        </p>
-      </div>
-    </section>
 
-    <section class="section container" id="skills">
-      <p class="section-label">Skill</p>
-      <h2>Hal yang sedang saya pelajari</h2>
-
-      <div class="skills-grid">
-        <article class="info-card">
-          <h3>HTML</h3>
-          <p>Membuat struktur halaman yang jelas, rapi, dan mudah dipahami.</p>
-        </article>
-        <article class="info-card">
-          <h3>CSS</h3>
-          <p>Mengatur warna, layout, spacing, dan tampilan responsif.</p>
-        </article>
-        <article class="info-card">
-          <h3>JavaScript</h3>
-          <p>Menambahkan interaksi sederhana seperti menu dan tombol aksi.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section container" id="projects">
-      <p class="section-label">Proyek</p>
-      <h2>Contoh proyek sederhana</h2>
-
-      <div class="projects-grid">
-        <article class="project-card">
-          <span>01</span>
-          <h3>Landing Page Bisnis</h3>
-          <p>Halaman promosi singkat untuk usaha kecil dengan tombol ajakan bertindak.</p>
-        </article>
-        <article class="project-card">
-          <span>02</span>
-          <h3>Blog Pribadi</h3>
-          <p>Template artikel sederhana yang enak dibaca di desktop dan mobile.</p>
-        </article>
-        <article class="project-card">
-          <span>03</span>
-          <h3>Halaman Kontak</h3>
-          <p>Form kontak ringan dengan validasi dasar dan tampilan bersih.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section contact" id="contact">
-      <div class="container contact-box">
-        <div>
-          <p class="section-label">Kontak</p>
-          <h2>Mari terhubung</h2>
+        <div class="about-card">
           <p>
-            Klik tombol di samping untuk melihat contoh interaksi JavaScript
-            sederhana.
+            Saya adalah mahasiswa Teknik Elektro Universitas Diponegoro dengan
+            ketertarikan pada teknologi, IoT, pemrograman, komunikasi, kepemimpinan,
+            serta pengembangan diri dan organisasi. Saya menikmati proses belajar
+            yang menggabungkan kemampuan teknis, cara berpikir sistematis, dan
+            kolaborasi dengan banyak orang.
+          </p>
+          <p>
+            Tujuan saya adalah berkembang di bidang elektro, riset, dan teknologi,
+            lalu berkontribusi melalui inovasi yang relevan dan bermanfaat.
           </p>
         </div>
-        <button class="btn btn-primary" id="contactButton">Kirim Pesan</button>
+      </div>
+    </section>
+
+    <section class="section container section-reveal" id="skills">
+      <div class="section-heading">
+        <p class="section-label">Skills</p>
+        <h2>Kemampuan yang saya kembangkan</h2>
+      </div>
+
+      <div class="skills-grid">
+        <article class="skill-card">
+          <h3>Programming</h3>
+          <div class="chip-group" aria-label="Programming skills">
+            <span>Python</span>
+            <span>C++</span>
+            <span>HTML</span>
+            <span>CSS</span>
+            <span>JavaScript</span>
+          </div>
+        </article>
+
+        <article class="skill-card">
+          <h3>Technical Interest</h3>
+          <div class="chip-group" aria-label="Technical interests">
+            <span>IoT</span>
+            <span>Microcontroller</span>
+            <span>Electronics</span>
+            <span>Web Basics</span>
+          </div>
+        </article>
+
+        <article class="skill-card">
+          <h3>Soft Skills</h3>
+          <div class="chip-group" aria-label="Soft skills">
+            <span>Leadership</span>
+            <span>Communication</span>
+            <span>Teamwork</span>
+            <span>Organization</span>
+            <span>Problem Solving</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="certification-card">
+        <span>Certification</span>
+        <p>Python Essentials 2 dan C++ Essentials 1 dari Cisco Networking Academy.</p>
+      </div>
+    </section>
+
+    <section class="section section-soft section-reveal" id="experience">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-label">Experience</p>
+          <h2>Pengalaman organisasi</h2>
+        </div>
+
+        <div class="timeline">
+          <article class="timeline-item">
+            <div class="timeline-dot" aria-hidden="true"></div>
+            <div class="timeline-card">
+              <span>Himpunan Mahasiswa Elektro FT UNDIP</span>
+              <h3>Staf Bidang Hubungan Masyarakat</h3>
+              <p>
+                Berperan dalam komunikasi, koordinasi, dan pengelolaan relasi
+                organisasi untuk mendukung program kerja yang efektif.
+              </p>
+            </div>
+          </article>
+
+          <article class="timeline-item">
+            <div class="timeline-dot" aria-hidden="true"></div>
+            <div class="timeline-card">
+              <span>SPE UNDIP Student Chapter</span>
+              <h3>Supervisor Departemen Human Capital</h3>
+              <p>
+                Mendukung pengembangan anggota, koordinasi internal, dan budaya
+                organisasi yang produktif serta kolaboratif.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container section-reveal" id="achievements">
+      <div class="section-heading">
+        <p class="section-label">Achievements</p>
+        <h2>Prestasi dan pencapaian</h2>
+      </div>
+
+      <div class="achievement-grid">
+        <article class="achievement-card">
+          <div class="achievement-icon" aria-hidden="true">01</div>
+          <h3>Lolos Pendanaan PKM-KC 2026</h3>
+          <p>Didanai oleh Belmawa melalui program kreativitas mahasiswa bidang karya cipta.</p>
+        </article>
+
+        <article class="achievement-card">
+          <div class="achievement-icon" aria-hidden="true">02</div>
+          <h3>Juara 1 PETROCUP 2025</h3>
+          <p>Meraih pencapaian terbaik dalam kompetisi PETROCUP 2025.</p>
+        </article>
+
+        <article class="achievement-card">
+          <div class="achievement-icon" aria-hidden="true">03</div>
+          <h3>Juara 2 Research School 2 FK 2025</h3>
+          <p>Berprestasi dalam kegiatan Research School 2 Fakultas Kedokteran 2025.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-soft section-reveal" id="projects">
+      <div class="container">
+        <div class="section-heading">
+          <p class="section-label">Projects</p>
+          <h2>Ruang karya yang terus berkembang</h2>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card">
+            <span class="project-tag">Concept</span>
+            <h3>IoT Smart Monitoring Concept</h3>
+            <p>
+              Konsep sistem monitoring berbasis IoT untuk membaca data sensor
+              dan membantu pengambilan keputusan secara lebih cepat.
+            </p>
+            <a href="#" aria-label="Detail IoT Smart Monitoring Concept">Coming Soon</a>
+          </article>
+
+          <article class="project-card">
+            <span class="project-tag">Website</span>
+            <h3>Personal Portfolio Website</h3>
+            <p>
+              Website portofolio ringan menggunakan HTML, CSS, dan JavaScript
+              untuk menampilkan profil, skill, pengalaman, dan karya.
+            </p>
+            <a href="#" aria-label="Detail Personal Portfolio Website">Detail</a>
+          </article>
+
+          <article class="project-card">
+            <span class="project-tag">Learning</span>
+            <h3>Basic Programming Exercises</h3>
+            <p>
+              Kumpulan latihan dasar pemrograman untuk memperkuat logika,
+              struktur data sederhana, dan problem solving.
+            </p>
+            <a href="#" aria-label="Detail Basic Programming Exercises">Coming Soon</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact-section section-reveal" id="contact">
+      <div class="container contact-card">
+        <div>
+          <p class="section-label">Contact</p>
+          <h2>Tertarik berkolaborasi atau mengenal saya lebih lanjut?</h2>
+          <p>
+            Saya terbuka untuk diskusi seputar teknologi, organisasi, riset,
+            dan peluang belajar yang relevan.
+          </p>
+        </div>
+
+        <div class="contact-actions" aria-label="Tautan kontak">
+          <!-- Ganti tanda # dengan link email, GitHub, Instagram, dan LinkedIn asli saat sudah siap. -->
+          <a class="contact-link" href="#">Email</a>
+          <a class="contact-link" href="#">GitHub</a>
+          <a class="contact-link" href="#">Instagram</a>
+          <a class="contact-link" href="#">LinkedIn</a>
+        </div>
       </div>
     </section>
   </main>
 
+  <button class="back-to-top" id="backToTop" type="button" aria-label="Kembali ke atas">
+    <span aria-hidden="true">Top</span>
+  </button>
+
   <footer class="footer">
-    <p>&copy; 2026 Rizky Pratama. Dibuat dengan HTML, CSS, dan JavaScript.</p>
+    <div class="container">
+      <p>&copy; 2026 Ricvaldy Timotius Tarigan. Built with passion, curiosity, and continuous learning.</p>
+    </div>
   </footer>
 
   <script src="script.js"></script>
