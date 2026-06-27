@@ -1,9 +1,9 @@
-const menuToggle = document.getElementById("menuToggle");
+﻿const menuToggle = document.getElementById("menuToggle");
 const navPanel = document.getElementById("navPanel");
 const navLinks = document.querySelectorAll(".nav-link");
 const themeToggle = document.getElementById("themeToggle");
 const backToTop = document.getElementById("backToTop");
-const revealItems = document.querySelectorAll(".section-reveal, .skill-card, .timeline-item, .achievement-card, .project-card");
+const revealItems = document.querySelectorAll(".section-reveal, .skill-card, .timeline-item, .achievement-card, .project-card, .petrocup-card");
 const sections = document.querySelectorAll("main section[id]");
 
 document.documentElement.classList.add("reveal-ready");
@@ -110,3 +110,4 @@ if ("IntersectionObserver" in window) {
 } else {
   revealItems.forEach((item) => item.classList.add("is-visible"));
 }
+
