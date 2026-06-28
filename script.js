@@ -3,7 +3,7 @@ const navPanel = document.getElementById("navPanel");
 const navLinks = document.querySelectorAll(".nav-link");
 const themeToggle = document.getElementById("themeToggle");
 const backToTop = document.getElementById("backToTop");
-const revealItems = document.querySelectorAll(".section-reveal, .skill-card, .timeline-item, .achievement-card, .project-card, .petrocup-card, .mini-card, .project-feature, .contact-method");
+const revealItems = document.querySelectorAll(".section-reveal, .skill-card, .timeline-item, .achievement-card, .project-card, .petrocup-card, .mini-card, .project-feature, .contact-method, .certificate-card");
 
 document.documentElement.classList.add("reveal-ready");
 
@@ -132,3 +132,4 @@ if ("IntersectionObserver" in window) {
 } else {
   revealItems.forEach((item) => item.classList.add("is-visible"));
 }
+
