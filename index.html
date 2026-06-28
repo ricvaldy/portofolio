@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Portofolio Ricvaldy Timotius Tarigan, mahasiswa Teknik Elektro Universitas Diponegoro dengan minat pada IoT, teknologi, pemrograman, desain, komunikasi, kepemimpinan, dan inovasi." />
-  <meta name="keywords" content="Ricvaldy Timotius Tarigan, portofolio, Teknik Elektro, Universitas Diponegoro, IoT, Python, C++, web development, mahasiswa elektro" />
+  <meta name="description" content="Portofolio Ricvaldy Timotius Tarigan, mahasiswa Teknik Elektro UNDIP yang menampilkan pengalaman organisasi, proyek IoT, kompetisi, dan kontribusi sosial berbasis teknologi." />
+  <meta name="keywords" content="Ricvaldy Timotius Tarigan, portofolio, Teknik Elektro, Universitas Diponegoro, IoT, Python, C++, Arduino, EWS, project sosial, PETROCUP, Research School" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="Ricvaldy Timotius Tarigan" />
   <meta name="theme-color" content="#102033" />
   <meta property="og:title" content="Ricvaldy Timotius Tarigan | Electrical Engineering Portfolio" />
-  <meta property="og:description" content="Portofolio profesional Ricvaldy Timotius Tarigan, mahasiswa Teknik Elektro UNDIP yang tertarik pada teknologi, IoT, riset, pemrograman, dan kepemimpinan." />
+  <meta property="og:description" content="Portofolio Ricvaldy Timotius Tarigan, mahasiswa Teknik Elektro UNDIP yang menampilkan pengalaman organisasi, proyek IoT, kompetisi, dan kontribusi sosial berbasis teknologi." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://ricvaldy.github.io/portofolio/" />
   <meta property="og:image" content="https://ricvaldy.github.io/portofolio/assets/images/profile-photo.jpg" />
@@ -17,12 +17,12 @@
   <link rel="stylesheet" href="style.css" />
   <title>Ricvaldy Timotius Tarigan | Electrical Engineering Portfolio</title>
 </head>
-<body>
+<body data-page="home">
   <a class="skip-link" href="#main">Lewati ke konten utama</a>
 
   <header class="site-header">
     <nav class="navbar container" aria-label="Navigasi utama">
-      <a class="brand" href="#home" aria-label="Ricvaldy Timotius Tarigan">
+      <a class="brand" data-page="home" href="index.html" aria-label="Ricvaldy Timotius Tarigan">
         <span class="brand-mark">RT</span>
         <span>Ricvaldy</span>
       </a>
@@ -35,13 +35,13 @@
 
       <div class="nav-panel" id="navPanel">
         <ul class="nav-links">
-          <li><a class="nav-link active" href="#home">Home</a></li>
-          <li><a class="nav-link" href="#about">About</a></li>
-          <li><a class="nav-link" href="#skills">Skills</a></li>
-          <li><a class="nav-link" href="#experience">Experience</a></li>
-          <li><a class="nav-link" href="#achievements">Achievements</a></li>
-          <li><a class="nav-link" href="#projects">Projects</a></li>
-          <li><a class="nav-link" href="#contact">Contact</a></li>
+          <li><a class="nav-link active" data-page="home" href="index.html">Home</a></li>
+          <li><a class="nav-link" data-page="about" href="about.html">About</a></li>
+          <li><a class="nav-link" data-page="skills" href="skills.html">Skills</a></li>
+          <li><a class="nav-link" data-page="experience" href="experience.html">Experience</a></li>
+          <li><a class="nav-link" data-page="achievements" href="achievements.html">Achievements</a></li>
+          <li><a class="nav-link" data-page="projects" href="projects.html">Projects</a></li>
+          <li><a class="nav-link" data-page="contact" href="contact.html">Contact</a></li>
         </ul>
 
         <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ganti mode warna">
@@ -51,7 +51,7 @@
     </nav>
   </header>
 
-  <main id="main">
+  <main id="main" class="page-main">
     <section class="hero section-reveal" id="home">
       <div class="hero-shape hero-shape-one" aria-hidden="true"></div>
       <div class="hero-shape hero-shape-two" aria-hidden="true"></div>
@@ -60,320 +60,43 @@
         <div class="hero-copy">
           <p class="eyebrow">Personal Portfolio</p>
           <h1>Ricvaldy Timotius Tarigan</h1>
-          <p class="hero-title">Electrical Engineering Student | Tech Enthusiast | Future Innovator</p>
+          <p class="hero-title">Electrical Engineering Student | IoT & Embedded Systems Enthusiast | Project-Oriented Learner</p>
           <p class="hero-description">
-            Mahasiswa Teknik Elektro Universitas Diponegoro yang tertarik pada IoT,
-            pemrograman, desain, komunikasi, kepemimpinan, dan pengembangan organisasi.
-            Saya ingin terus berkembang di bidang elektro, riset, dan teknologi melalui
-            karya yang berdampak.
+            Saya membangun pengalaman di bidang IoT, embedded systems, riset terapan,
+            komunikasi, dan leadership. Portofolio ini merangkum karya, pencapaian,
+            serta pengalaman organisasi yang membentuk cara kerja saya: analitis,
+            kolaboratif, dan berorientasi pada dampak.
           </p>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#projects">Lihat Portofolio</a>
-            <a class="btn btn-secondary" href="#contact">Hubungi Saya</a>
+            <a class="btn btn-primary" href="projects.html">Lihat Portofolio</a>
+            <a class="btn btn-secondary" href="contact.html">Hubungi Saya</a>
           </div>
         </div>
 
         <aside class="profile-card" aria-label="Ringkasan profil Ricvaldy">
           <figure class="profile-photo-frame">
-            <img
-              src="assets/images/profile-photo.jpg"
-              alt="Ricvaldy Timotius Tarigan saat kegiatan lapangan berbasis teknologi"
-              class="profile-photo"
-              decoding="async"
-            />
-            <figcaption>Learning through field experience and technology.</figcaption>
+            <img src="assets/images/profile-photo.jpg" alt="Ricvaldy Timotius Tarigan saat kegiatan lapangan berbasis teknologi" class="profile-photo" decoding="async" />
+            <figcaption>Field learning, engineering practice, and technology.</figcaption>
           </figure>
 
-          <div class="profile-top">
-            <div>
-              <p class="profile-label">Available for growth</p>
-              <h2>Electrical Engineering</h2>
-            </div>
-          </div>
-
-          <p class="profile-summary">
-            Exploring electronics, programming, leadership, and innovation with
-            curiosity and consistent learning.
-          </p>
-
+          <div class="profile-top"><div><p class="profile-label">Open to learning</p><h2>Electrical Engineering</h2></div></div>
+          <p class="profile-summary">Turning engineering fundamentals into practical, collaborative, and people-centered solutions.</p>
           <div class="profile-list">
-            <div>
-              <span>University</span>
-              <strong>Universitas Diponegoro</strong>
-            </div>
-            <div>
-              <span>Focus</span>
-              <strong>IoT, Research, Technology</strong>
-            </div>
-            <div>
-              <span>Mindset</span>
-              <strong>Curious, collaborative, adaptive</strong>
-            </div>
+            <div><span>University</span><strong>Universitas Diponegoro</strong></div>
+            <div><span>Focus</span><strong>IoT, Embedded Systems, Applied Research</strong></div>
+            <div><span>Working Style</span><strong>Analytical, collaborative, impact-driven</strong></div>
           </div>
         </aside>
       </div>
     </section>
 
-    <section class="section section-soft section-reveal" id="about">
-      <div class="container about-grid">
-        <div>
-          <p class="section-label">About Me</p>
-          <h2>Belajar, bertumbuh, dan membangun solusi teknologi yang bermakna.</h2>
-        </div>
-
-        <div class="about-card">
-          <p>
-            Saya adalah mahasiswa Teknik Elektro Universitas Diponegoro dengan
-            ketertarikan pada teknologi, IoT, pemrograman, komunikasi, kepemimpinan,
-            serta pengembangan diri dan organisasi. Saya menikmati proses belajar
-            yang menggabungkan kemampuan teknis, cara berpikir sistematis, dan
-            kolaborasi dengan banyak orang.
-          </p>
-          <p>
-            Tujuan saya adalah berkembang di bidang elektro, riset, dan teknologi,
-            lalu berkontribusi melalui inovasi yang relevan dan bermanfaat.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section container section-reveal" id="skills">
-      <div class="section-heading">
-        <p class="section-label">Skills</p>
-        <h2>Kemampuan yang saya kembangkan</h2>
-      </div>
-
-      <div class="skills-grid">
-        <article class="skill-card">
-          <h3>Programming</h3>
-          <div class="chip-group" aria-label="Programming skills">
-            <span>Python</span>
-            <span>C++</span>
-            <span>HTML</span>
-            <span>CSS</span>
-            <span>JavaScript</span>
-          </div>
-        </article>
-
-        <article class="skill-card">
-          <h3>Technical Interest</h3>
-          <div class="chip-group" aria-label="Technical interests">
-            <span>IoT</span>
-            <span>Microcontroller</span>
-            <span>Electronics</span>
-            <span>Web Basics</span>
-          </div>
-        </article>
-
-        <article class="skill-card">
-          <h3>Soft Skills</h3>
-          <div class="chip-group" aria-label="Soft skills">
-            <span>Leadership</span>
-            <span>Communication</span>
-            <span>Teamwork</span>
-            <span>Organization</span>
-            <span>Problem Solving</span>
-          </div>
-        </article>
-      </div>
-
-      <div class="certification-card">
-        <span>Certification</span>
-        <p>Python Essentials 2 dan C++ Essentials 1 dari Cisco Networking Academy.</p>
-      </div>
-    </section>
-
-    <section class="section section-soft section-reveal" id="experience">
-      <div class="container">
-        <div class="section-heading">
-          <p class="section-label">Experience</p>
-          <h2>Pengalaman organisasi</h2>
-        </div>
-
-        <div class="timeline">
-          <article class="timeline-item">
-            <div class="timeline-dot" aria-hidden="true"></div>
-            <div class="timeline-card">
-              <span>Himpunan Mahasiswa Elektro FT UNDIP</span>
-              <h3>Staf Bidang Hubungan Masyarakat</h3>
-              <p>
-                Berperan dalam komunikasi, koordinasi, dan pengelolaan relasi
-                organisasi untuk mendukung program kerja yang efektif.
-              </p>
-            </div>
-          </article>
-
-          <article class="timeline-item">
-            <div class="timeline-dot" aria-hidden="true"></div>
-            <div class="timeline-card">
-              <span>SPE UNDIP Student Chapter</span>
-              <h3>Supervisor Departemen Human Capital</h3>
-              <p>
-                Mendukung pengembangan anggota, koordinasi internal, dan budaya
-                organisasi yang produktif serta kolaboratif.
-              </p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section container section-reveal" id="achievements">
-      <div class="section-heading">
-        <p class="section-label">Achievements</p>
-        <h2>Prestasi dan pencapaian</h2>
-      </div>
-
-      <div class="achievement-grid">
-        <article class="achievement-card">
-          <div class="achievement-icon" aria-hidden="true">01</div>
-          <h3>Lolos Pendanaan PKM-KC 2026</h3>
-          <p>Didanai oleh Belmawa melalui program kreativitas mahasiswa bidang karya cipta.</p>
-        </article>
-
-        <article class="achievement-card">
-          <div class="achievement-icon" aria-hidden="true">02</div>
-          <h3>Juara 1 PETROCUP 2025</h3>
-          <p>Meraih pencapaian terbaik dalam kompetisi PETROCUP SPE UNDIP SC 2025.</p>
-        </article>
-
-        <article class="achievement-card">
-          <div class="achievement-icon" aria-hidden="true">03</div>
-          <h3>Juara 2 Research School 2 FK 2025</h3>
-          <p>Berprestasi dalam kegiatan Research School 2 Fakultas Kedokteran 2025.</p>
-        </article>
-      </div>
-
-      <div class="petrocup-showcase">
-        <div class="petrocup-heading">
-          <span>Featured Moment</span>
-          <h3>PETROCUP SPE UNDIP SC 2025</h3>
-          <p>Dokumentasi presentasi, sesi bersama peserta, dan momen penghargaan Juara 1 PETROCUP Paper Competition 2025.</p>
-        </div>
-
-        <div class="petrocup-gallery" aria-label="Galeri dokumentasi PETROCUP SPE 2025">
-          <figure class="petrocup-card petrocup-card-wide">
-            <img src="assets/images/petrocup-group.jpg" alt="Dokumentasi peserta PETROCUP SPE UNDIP SC 2025" loading="lazy" decoding="async" />
-            <figcaption>Group session</figcaption>
-          </figure>
-
-          <figure class="petrocup-card">
-            <img src="assets/images/petrocup-presentation.jpg" alt="Ricvaldy saat presentasi karya pada PETROCUP SPE 2025" loading="lazy" decoding="async" />
-            <figcaption>Paper presentation</figcaption>
-          </figure>
-
-          <figure class="petrocup-card">
-            <img src="assets/images/petrocup-team-winner.jpg" alt="Tim pemenang Juara 1 PETROCUP 2025 berfoto bersama penghargaan" loading="lazy" decoding="async" />
-            <figcaption>Winning team</figcaption>
-          </figure>
-
-          <figure class="petrocup-card">
-            <img src="assets/images/petrocup-award.jpg" alt="Ricvaldy memegang penghargaan Juara 1 PETROCUP Paper Competition 2025" loading="lazy" decoding="async" />
-            <figcaption>1st place award</figcaption>
-          </figure>
-        </div>
-      </div>
-
-      <div class="petrocup-showcase research-school-showcase">
-        <div class="petrocup-heading">
-          <span>Featured Moment</span>
-          <h3>Research School 2 FK 2025</h3>
-          <p>Dokumentasi presentasi, tim, dan momen penghargaan Juara 2 Research School 2 Fakultas Kedokteran 2025.</p>
-        </div>
-
-        <div class="petrocup-gallery" aria-label="Galeri dokumentasi Research School 2 FK 2025">
-          <figure class="petrocup-card petrocup-card-wide">
-            <img src="assets/images/research-school-winners.jpg" alt="Dokumentasi para pemenang Research School 2 Fakultas Kedokteran 2025" loading="lazy" decoding="async" />
-            <figcaption>Winners moment</figcaption>
-          </figure>
-
-          <figure class="petrocup-card">
-            <img src="assets/images/research-school-award.jpg" alt="Ricvaldy memegang piala dan sertifikat Juara 2 Research School 2 FK 2025" loading="lazy" decoding="async" />
-            <figcaption>2nd place award</figcaption>
-          </figure>
-
-          <figure class="petrocup-card">
-            <img src="assets/images/research-school-presentation.jpg" alt="Tim melakukan presentasi pada Research School 2 FK 2025" loading="lazy" decoding="async" />
-            <figcaption>Project presentation</figcaption>
-          </figure>
-
-          <figure class="petrocup-card">
-            <img src="assets/images/research-school-award-team.jpg" alt="Tim bersama penghargaan Juara 2 Research School 2 FK 2025" loading="lazy" decoding="async" />
-            <figcaption>Award team</figcaption>
-          </figure>
-
-          <figure class="petrocup-card">
-            <img src="assets/images/research-school-stage.jpg" alt="Tim Research School 2 FK 2025 berada di panggung presentasi" loading="lazy" decoding="async" />
-            <figcaption>Stage session</figcaption>
-          </figure>
-
-          <figure class="petrocup-card petrocup-card-wide">
-            <img src="assets/images/research-school-group.jpg" alt="Foto bersama peserta dan pemenang Research School 2 FK 2025" loading="lazy" decoding="async" />
-            <figcaption>Full group session</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-soft section-reveal" id="projects">
-      <div class="container">
-        <div class="section-heading">
-          <p class="section-label">Projects</p>
-          <h2>Ruang karya yang terus berkembang</h2>
-        </div>
-
-        <div class="project-grid">
-          <article class="project-card">
-            <span class="project-tag">Concept</span>
-            <h3>IoT Smart Monitoring Concept</h3>
-            <p>
-              Konsep sistem monitoring berbasis IoT untuk membaca data sensor
-              dan membantu pengambilan keputusan secara lebih cepat.
-            </p>
-            <a href="#" aria-label="Detail IoT Smart Monitoring Concept">Coming Soon</a>
-          </article>
-
-          <article class="project-card">
-            <span class="project-tag">Website</span>
-            <h3>Personal Portfolio Website</h3>
-            <p>
-              Website portofolio ringan menggunakan HTML, CSS, dan JavaScript
-              untuk menampilkan profil, skill, pengalaman, dan karya.
-            </p>
-            <a href="#" aria-label="Detail Personal Portfolio Website">Detail</a>
-          </article>
-
-          <article class="project-card">
-            <span class="project-tag">Learning</span>
-            <h3>Basic Programming Exercises</h3>
-            <p>
-              Kumpulan latihan dasar pemrograman untuk memperkuat logika,
-              struktur data sederhana, dan problem solving.
-            </p>
-            <a href="#" aria-label="Detail Basic Programming Exercises">Coming Soon</a>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section contact-section section-reveal" id="contact">
-      <div class="container contact-card">
-        <div>
-          <p class="section-label">Contact</p>
-          <h2>Tertarik berkolaborasi atau mengenal saya lebih lanjut?</h2>
-          <p>
-            Saya terbuka untuk diskusi seputar teknologi, organisasi, riset,
-            dan peluang belajar yang relevan.
-          </p>
-        </div>
-
-        <div class="contact-actions" aria-label="Tautan kontak">
-          <a class="contact-link" href="mailto:ricvaldytimotius2@gmail.com" aria-label="Kirim email ke Ricvaldy">Email</a>
-          <a class="contact-link" href="https://github.com/ricvaldy" target="_blank" rel="noopener noreferrer" aria-label="Kunjungi GitHub Ricvaldy">GitHub</a>
-          <a class="contact-link" href="https://www.instagram.com/ricvaldyy" target="_blank" rel="noopener noreferrer" aria-label="Kunjungi Instagram Ricvaldy">Instagram</a>
-          <a class="contact-link" href="https://www.linkedin.com/in/ricvaldytarigan" target="_blank" rel="noopener noreferrer" aria-label="Kunjungi LinkedIn Ricvaldy">LinkedIn</a>
-        </div>
+    <section class="section container section-reveal">
+      <div class="section-heading"><p class="section-label">Explore</p><h2>Navigasi cepat portofolio</h2></div>
+      <div class="overview-grid">
+        <a class="mini-card" href="about.html"><span>01</span><h3>About</h3><p>Ringkasan profil, arah pengembangan, dan nilai kerja profesional saya.</p></a>
+        <a class="mini-card" href="skills.html"><span>02</span><h3>Skills</h3><p>Kombinasi kemampuan teknis, minat engineering, dan kemampuan kolaboratif.</p></a>
+        <a class="mini-card" href="projects.html"><span>03</span><h3>Projects</h3><p>Dokumentasi karya, proyek IoT, dan kontribusi sosial berbasis teknologi.</p></a>
       </div>
     </section>
   </main>
@@ -384,14 +107,13 @@
 
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2026 Ricvaldy Timotius Tarigan. Built with passion, curiosity, and continuous learning.</p>
+      <p>&copy; 2026 Ricvaldy Timotius Tarigan. Engineering mindset. Collaborative execution. Practical impact.</p>
     </div>
   </footer>
 
   <script src="script.js"></script>
 </body>
 </html>
-
 
 
 
