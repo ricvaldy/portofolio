@@ -1304,3 +1304,34 @@ body.page-is-leaving .footer {
 .timeline-card .chip-group {
   margin-top: 16px;
 }
+
+/* Custom lightning cursor for desktop pointers */
+@media (hover: hover) and (pointer: fine) {
+  body,
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  .btn,
+  .nav-link,
+  .contact-link,
+  .project-card a,
+  .theme-toggle,
+  .menu-toggle,
+  .back-to-top {
+    cursor: url("assets/images/lightning-cursor.svg") 6 2, auto;
+  }
+
+  a:hover,
+  button:hover,
+  .btn:hover,
+  .nav-link:hover,
+  .contact-link:hover,
+  .project-card a:hover,
+  .theme-toggle:hover,
+  .menu-toggle:hover,
+  .back-to-top:hover {
+    cursor: url("assets/images/lightning-cursor.svg") 6 2, pointer;
+  }
+}
