@@ -1474,3 +1474,38 @@ body.page-is-leaving .footer {
     0 0 30px rgba(115, 199, 191, 0.18),
     0 0 52px rgba(216, 185, 106, 0.10);
 }
+
+.certificate-group {
+  margin-top: 30px;
+}
+
+.certificate-group + .certificate-group {
+  margin-top: 42px;
+}
+
+.certificate-group-heading {
+  max-width: 760px;
+  margin-bottom: 18px;
+}
+
+.certificate-group-heading span {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.certificate-group-heading h3 {
+  margin: 0 0 8px;
+  color: var(--heading);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+}
+
+.certificate-group-heading p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.75;
+}
