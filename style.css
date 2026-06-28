@@ -1414,3 +1414,63 @@ body.page-is-leaving .footer {
     padding: 22px;
   }
 }
+
+/* Soft glow accents for active navigation and portfolio cards */
+.nav-link.active {
+  position: relative;
+  border-color: rgba(115, 199, 191, 0.36);
+  background: linear-gradient(135deg, rgba(63, 143, 138, 0.28), rgba(115, 199, 191, 0.12));
+  box-shadow:
+    0 0 0 1px rgba(115, 199, 191, 0.12),
+    0 0 18px rgba(115, 199, 191, 0.22),
+    0 10px 24px rgba(16, 32, 51, 0.18);
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 7px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(216, 185, 106, 0.9);
+  box-shadow: 0 0 12px rgba(216, 185, 106, 0.45);
+}
+
+.about-card,
+.skill-card,
+.certification-card,
+.certificate-card,
+.timeline-card,
+.achievement-card,
+.project-card,
+.petrocup-card,
+.petrocup-showcase,
+.project-feature,
+.contact-method,
+.mini-card {
+  box-shadow:
+    var(--shadow-soft),
+    0 0 0 1px rgba(115, 199, 191, 0.08),
+    0 0 24px rgba(63, 143, 138, 0.10);
+}
+
+.about-card:hover,
+.skill-card:hover,
+.certification-card:hover,
+.certificate-card:hover,
+.timeline-card:hover,
+.achievement-card:hover,
+.project-card:hover,
+.petrocup-card:hover,
+.project-feature:hover,
+.contact-method:hover,
+.mini-card:hover {
+  border-color: rgba(115, 199, 191, 0.42);
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px rgba(115, 199, 191, 0.16),
+    0 0 30px rgba(115, 199, 191, 0.18),
+    0 0 52px rgba(216, 185, 106, 0.10);
+}
