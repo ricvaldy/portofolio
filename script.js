@@ -102,6 +102,27 @@ function shouldAnimateNavigation(link, event) {
   return true;
 }
 
+const pageTransition = document.createElement("div");
+pageTransition.className = "page-transition";
+pageTransition.setAttribute("aria-hidden", "true");
+pageTransition.innerHTML = `
+  <div class="page-transition-panel">
+    <span class="page-transition-kicker">Opening</span>
+    <strong class="page-transition-title">Portfolio</strong>
+    <span class="page-transition-line"></span>
+  </div>
+`;
+document.body.appendChild(pageTransition);
+
+const pageTransitionTitle = pageTransition.querySelector(".page-transition-title");
+
+function getTransitionLabel(link) {
+  const label = link.textContent.trim();
+  if (label) return label;
+
+  return "Portfolio";
+}
+
 document.addEventListener("click", (event) => {
   const link = event.target.closest("a[href]");
 
@@ -109,11 +130,17 @@ document.addEventListener("click", (event) => {
 
   event.preventDefault();
   closeMenu();
+
+  if (pageTransitionTitle) {
+    pageTransitionTitle.textContent = getTransitionLabel(link);
+  }
+
+  pageTransition.classList.add("is-active");
   document.body.classList.add("page-is-leaving");
 
   window.setTimeout(() => {
     window.location.href = link.href;
-  }, 320);
+  }, 780);
 });
 
 if ("IntersectionObserver" in window) {
@@ -230,3 +257,4 @@ if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && 
 
   startHeroPhotoSlider();
 }
+
