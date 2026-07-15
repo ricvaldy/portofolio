@@ -319,6 +319,8 @@ if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && 
 
 const VISITOR_NAME_KEY = "portfolio-visitor-name";
 const VISITOR_LIST_KEY = "portfolio-visitor-list";
+const VISITOR_ID_KEY = "portfolio-visitor-id";
+const FIREBASE_VISITOR_COLLECTION = "portfolioVisitors";
 
 function readVisitorList() {
   try {
@@ -350,9 +352,25 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
-function registerVisitor(name) {
+function getOrCreateVisitorId() {
+  try {
+    const existingId = localStorage.getItem(VISITOR_ID_KEY);
+    if (existingId) return existingId;
+
+    const newId = (window.crypto && window.crypto.randomUUID)
+      ? window.crypto.randomUUID()
+      : `visitor-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+    localStorage.setItem(VISITOR_ID_KEY, newId);
+    return newId;
+  } catch (error) {
+    return `visitor-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+}
+
+function registerLocalVisitor(name) {
   const cleanName = cleanVisitorName(name);
-  if (!cleanName) return [];
+  if (!cleanName) return readLocalVisitorPayload();
 
   const visitors = readVisitorList();
   const existingVisitor = visitors.find((visitor) => visitor.name.toLowerCase() === cleanName.toLowerCase());
@@ -362,14 +380,23 @@ function registerVisitor(name) {
   } else {
     visitors.unshift({
       name: cleanName,
-      firstSeenAt: new Date().toISOString(),
       lastSeenAt: new Date().toISOString()
     });
   }
 
   const limitedVisitors = visitors.slice(0, 12);
   saveVisitorList(limitedVisitors);
-  return limitedVisitors;
+  return readLocalVisitorPayload();
+}
+
+function readLocalVisitorPayload() {
+  const visitors = readVisitorList();
+
+  return {
+    visitors,
+    count: visitors.length,
+    source: "browser ini"
+  };
 }
 
 function getSavedVisitorName() {
@@ -404,13 +431,31 @@ function formatVisitorTime(isoDate) {
   }
 }
 
-function renderVisitorBoard(currentVisitorName) {
+function normalizeVisitorPayload(payload) {
+  if (!payload) return readLocalVisitorPayload();
+  if (Array.isArray(payload)) {
+    return {
+      visitors: payload,
+      count: payload.length,
+      source: "browser ini"
+    };
+  }
+
+  return {
+    visitors: Array.isArray(payload.visitors) ? payload.visitors : [],
+    count: Number.isFinite(payload.count) ? payload.count : 0,
+    source: payload.source || "browser ini"
+  };
+}
+
+function renderVisitorBoard(currentVisitorName, payload) {
   if (document.body.dataset.page !== "home") return;
 
   const heroActions = document.querySelector(".hero-actions");
   if (!heroActions) return;
 
-  const visitors = readVisitorList();
+  const visitorPayload = normalizeVisitorPayload(payload || readLocalVisitorPayload());
+  const visitors = visitorPayload.visitors;
   const existingBoard = document.getElementById("visitorBoard");
   const visitorBoard = existingBoard || document.createElement("aside");
   visitorBoard.className = "visitor-board";
@@ -423,8 +468,8 @@ function renderVisitorBoard(currentVisitorName) {
   visitorBoard.innerHTML = `
     <div>
       <span class="visitor-board-label">Visitor Log</span>
-      <strong>${visitors.length} orang pernah masuk</strong>
-      <p>Halo, ${escapeHtml(currentVisitorName)}. Daftar ini tersimpan di browser ini.</p>
+      <strong>${visitorPayload.count} orang pernah masuk</strong>
+      <p>Halo, ${escapeHtml(currentVisitorName)}. Data pengunjung tersimpan di ${escapeHtml(visitorPayload.source)}.</p>
     </div>
     <ul aria-label="Daftar nama pengunjung">
       ${visitorItems}
@@ -433,6 +478,103 @@ function renderVisitorBoard(currentVisitorName) {
 
   if (!existingBoard) {
     heroActions.insertAdjacentElement("afterend", visitorBoard);
+  }
+}
+
+const localVisitorStore = {
+  source: "browser ini",
+  async register(name) {
+    return registerLocalVisitor(name);
+  },
+  async read() {
+    return readLocalVisitorPayload();
+  }
+};
+
+async function createFirebaseVisitorStore() {
+  try {
+    const configModule = await import("./firebase-config.js");
+    const firebaseConfig = configModule.firebaseConfig;
+    const firebaseEnabled = configModule.firebaseEnabled !== false
+      && firebaseConfig
+      && firebaseConfig.apiKey
+      && firebaseConfig.projectId
+      && !String(firebaseConfig.apiKey).startsWith("ISI_");
+
+    if (!firebaseEnabled) return null;
+
+    const [appModule, firestoreModule] = await Promise.all([
+      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js")
+    ]);
+
+    const app = appModule.initializeApp(firebaseConfig);
+    const db = firestoreModule.getFirestore(app);
+    const visitorsCollection = firestoreModule.collection(db, FIREBASE_VISITOR_COLLECTION);
+
+    async function readFirebaseVisitors() {
+      const latestVisitorsQuery = firestoreModule.query(
+        visitorsCollection,
+        firestoreModule.orderBy("lastSeenAt", "desc"),
+        firestoreModule.limit(12)
+      );
+
+      const [latestSnapshot, countSnapshot] = await Promise.all([
+        firestoreModule.getDocs(latestVisitorsQuery),
+        firestoreModule.getCountFromServer(visitorsCollection)
+      ]);
+
+      const visitors = latestSnapshot.docs.map((visitorDocument) => {
+        const data = visitorDocument.data();
+        const lastSeenValue = data.lastSeenAt;
+        const lastSeenAt = lastSeenValue && typeof lastSeenValue.toDate === "function"
+          ? lastSeenValue.toDate().toISOString()
+          : new Date().toISOString();
+
+        return {
+          name: cleanVisitorName(String(data.name || "Pengunjung")),
+          lastSeenAt
+        };
+      });
+
+      return {
+        visitors,
+        count: countSnapshot.data().count || visitors.length,
+        source: "Firebase Firestore"
+      };
+    }
+
+    return {
+      source: "Firebase Firestore",
+      async register(name) {
+        const visitorId = getOrCreateVisitorId();
+        const visitorDocument = firestoreModule.doc(db, FIREBASE_VISITOR_COLLECTION, visitorId);
+
+        await firestoreModule.setDoc(visitorDocument, {
+          name: cleanVisitorName(name),
+          lastSeenAt: firestoreModule.serverTimestamp()
+        }, { merge: true });
+
+        return readFirebaseVisitors();
+      },
+      read: readFirebaseVisitors
+    };
+  } catch (error) {
+    console.warn("Firebase visitor log belum aktif, menggunakan penyimpanan lokal.", error);
+    return null;
+  }
+}
+
+let activeVisitorStore = localVisitorStore;
+
+async function registerAndRenderVisitor(visitorName) {
+  try {
+    const payload = await activeVisitorStore.register(visitorName);
+    renderVisitorBoard(visitorName, payload);
+  } catch (error) {
+    console.warn("Gagal menyimpan ke Firebase, memakai penyimpanan lokal.", error);
+    activeVisitorStore = localVisitorStore;
+    renderVisitorBoard(visitorName, await activeVisitorStore.register(visitorName));
   }
 }
 
@@ -455,7 +597,7 @@ function showVisitorGate() {
         <input id="visitorNameInput" name="visitorName" type="text" maxlength="28" autocomplete="name" placeholder="Contoh: Ricvaldy" required />
         <button type="submit">Masuk</button>
       </div>
-      <small>Data nama disimpan di browser pengunjung.</small>
+      <small>Jika Firebase sudah dikonfigurasi, nama pengunjung akan tersimpan global.</small>
     </form>
   `;
 
@@ -467,7 +609,7 @@ function showVisitorGate() {
 
   window.setTimeout(() => visitorNameInput?.focus(), 100);
 
-  visitorGateForm?.addEventListener("submit", (event) => {
+  visitorGateForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const formData = new FormData(visitorGateForm);
@@ -475,8 +617,7 @@ function showVisitorGate() {
     if (!visitorName) return;
 
     saveVisitorName(visitorName);
-    registerVisitor(visitorName);
-    renderVisitorBoard(visitorName);
+    await registerAndRenderVisitor(visitorName);
 
     visitorGate.classList.add("is-leaving");
     window.setTimeout(() => {
@@ -486,11 +627,15 @@ function showVisitorGate() {
   });
 }
 
-const savedVisitorName = getSavedVisitorName();
-if (savedVisitorName) {
-  registerVisitor(savedVisitorName);
-  renderVisitorBoard(savedVisitorName);
-} else {
-  showVisitorGate();
+async function initializeVisitorFeature() {
+  activeVisitorStore = await createFirebaseVisitorStore() || localVisitorStore;
+
+  const savedVisitorName = getSavedVisitorName();
+  if (savedVisitorName) {
+    await registerAndRenderVisitor(savedVisitorName);
+  } else {
+    showVisitorGate();
+  }
 }
 
+initializeVisitorFeature();
