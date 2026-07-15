@@ -60,13 +60,41 @@ const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
 
 document.documentElement.dataset.theme = initialTheme;
 
+function syncThemeToggle(theme) {
+  if (!themeToggle) return;
+
+  const isDark = theme === "dark";
+  const nextLabel = isDark ? "Ganti ke mode terang" : "Ganti ke mode gelap";
+
+  themeToggle.classList.toggle("is-dark", isDark);
+  themeToggle.dataset.mode = theme;
+  themeToggle.setAttribute("aria-label", nextLabel);
+  themeToggle.setAttribute("title", nextLabel);
+}
+
 if (themeToggle) {
+  themeToggle.innerHTML = `
+    <span class="theme-toggle-track" aria-hidden="true">
+      <span class="theme-toggle-glow"></span>
+      <span class="theme-toggle-symbol theme-toggle-sun">&#9728;</span>
+      <span class="theme-toggle-symbol theme-toggle-moon">&#9790;</span>
+      <span class="theme-toggle-thumb"><span></span></span>
+    </span>
+    <span class="theme-toggle-label">Theme</span>
+  `;
+
+  syncThemeToggle(initialTheme);
+
   themeToggle.addEventListener("click", () => {
     const currentTheme = document.documentElement.dataset.theme;
     const nextTheme = currentTheme === "dark" ? "light" : "dark";
 
     document.documentElement.dataset.theme = nextTheme;
     saveTheme(nextTheme);
+    syncThemeToggle(nextTheme);
+
+    themeToggle.classList.remove("is-animating");
+    window.requestAnimationFrame(() => themeToggle.classList.add("is-animating"));
   });
 }
 if (navPanel && themeToggle) {
@@ -286,5 +314,6 @@ if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && 
 
   startHeroPhotoSlider();
 }
+
 
 
