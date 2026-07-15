@@ -55,8 +55,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 const savedTheme = getSavedTheme();
-const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+const initialTheme = savedTheme || "light";
 
 document.documentElement.dataset.theme = initialTheme;
 
@@ -316,4 +315,182 @@ if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && 
 }
 
 
+
+
+const VISITOR_NAME_KEY = "portfolio-visitor-name";
+const VISITOR_LIST_KEY = "portfolio-visitor-list";
+
+function readVisitorList() {
+  try {
+    const storedVisitors = JSON.parse(localStorage.getItem(VISITOR_LIST_KEY) || "[]");
+    return Array.isArray(storedVisitors) ? storedVisitors : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveVisitorList(visitors) {
+  try {
+    localStorage.setItem(VISITOR_LIST_KEY, JSON.stringify(visitors));
+  } catch (error) {
+    return;
+  }
+}
+
+function cleanVisitorName(name) {
+  return name.replace(/\s+/g, " ").trim().slice(0, 28);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function registerVisitor(name) {
+  const cleanName = cleanVisitorName(name);
+  if (!cleanName) return [];
+
+  const visitors = readVisitorList();
+  const existingVisitor = visitors.find((visitor) => visitor.name.toLowerCase() === cleanName.toLowerCase());
+
+  if (existingVisitor) {
+    existingVisitor.lastSeenAt = new Date().toISOString();
+  } else {
+    visitors.unshift({
+      name: cleanName,
+      firstSeenAt: new Date().toISOString(),
+      lastSeenAt: new Date().toISOString()
+    });
+  }
+
+  const limitedVisitors = visitors.slice(0, 12);
+  saveVisitorList(limitedVisitors);
+  return limitedVisitors;
+}
+
+function getSavedVisitorName() {
+  try {
+    return cleanVisitorName(localStorage.getItem(VISITOR_NAME_KEY) || "");
+  } catch (error) {
+    return "";
+  }
+}
+
+function saveVisitorName(name) {
+  try {
+    localStorage.setItem(VISITOR_NAME_KEY, name);
+  } catch (error) {
+    return;
+  }
+}
+
+function formatVisitorTime(isoDate) {
+  if (!isoDate) return "Baru saja";
+
+  try {
+    return new Intl.DateTimeFormat("id-ID", {
+      timeZone: "Asia/Jakarta",
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date(isoDate)).replace(/\./g, ":");
+  } catch (error) {
+    return "Baru saja";
+  }
+}
+
+function renderVisitorBoard(currentVisitorName) {
+  if (document.body.dataset.page !== "home") return;
+
+  const heroActions = document.querySelector(".hero-actions");
+  if (!heroActions) return;
+
+  const visitors = readVisitorList();
+  const existingBoard = document.getElementById("visitorBoard");
+  const visitorBoard = existingBoard || document.createElement("aside");
+  visitorBoard.className = "visitor-board";
+  visitorBoard.id = "visitorBoard";
+
+  const visitorItems = visitors.length
+    ? visitors.map((visitor) => `<li><span>${escapeHtml(visitor.name)}</span><small>${escapeHtml(formatVisitorTime(visitor.lastSeenAt))}</small></li>`).join("")
+    : "<li><span>Belum ada nama</span><small>-</small></li>";
+
+  visitorBoard.innerHTML = `
+    <div>
+      <span class="visitor-board-label">Visitor Log</span>
+      <strong>${visitors.length} orang pernah masuk</strong>
+      <p>Halo, ${escapeHtml(currentVisitorName)}. Daftar ini tersimpan di browser ini.</p>
+    </div>
+    <ul aria-label="Daftar nama pengunjung">
+      ${visitorItems}
+    </ul>
+  `;
+
+  if (!existingBoard) {
+    heroActions.insertAdjacentElement("afterend", visitorBoard);
+  }
+}
+
+function showVisitorGate() {
+  if (document.getElementById("visitorGate")) return;
+
+  const visitorGate = document.createElement("section");
+  visitorGate.className = "visitor-gate";
+  visitorGate.id = "visitorGate";
+  visitorGate.setAttribute("aria-modal", "true");
+  visitorGate.setAttribute("role", "dialog");
+  visitorGate.setAttribute("aria-labelledby", "visitorGateTitle");
+  visitorGate.innerHTML = `
+    <form class="visitor-gate-card" id="visitorGateForm">
+      <span class="visitor-gate-kicker">Welcome</span>
+      <h2 id="visitorGateTitle">Masuk sebagai siapa?</h2>
+      <p>Tulis nama singkat kamu dulu sebelum melihat portofolio ini.</p>
+      <label for="visitorNameInput">Nama</label>
+      <div class="visitor-gate-input-row">
+        <input id="visitorNameInput" name="visitorName" type="text" maxlength="28" autocomplete="name" placeholder="Contoh: Ricvaldy" required />
+        <button type="submit">Masuk</button>
+      </div>
+      <small>Data nama disimpan di browser pengunjung.</small>
+    </form>
+  `;
+
+  document.body.appendChild(visitorGate);
+  document.body.classList.add("visitor-gate-open");
+
+  const visitorNameInput = document.getElementById("visitorNameInput");
+  const visitorGateForm = document.getElementById("visitorGateForm");
+
+  window.setTimeout(() => visitorNameInput?.focus(), 100);
+
+  visitorGateForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(visitorGateForm);
+    const visitorName = cleanVisitorName(String(formData.get("visitorName") || ""));
+    if (!visitorName) return;
+
+    saveVisitorName(visitorName);
+    registerVisitor(visitorName);
+    renderVisitorBoard(visitorName);
+
+    visitorGate.classList.add("is-leaving");
+    window.setTimeout(() => {
+      visitorGate.remove();
+      document.body.classList.remove("visitor-gate-open");
+    }, 420);
+  });
+}
+
+const savedVisitorName = getSavedVisitorName();
+if (savedVisitorName) {
+  registerVisitor(savedVisitorName);
+  renderVisitorBoard(savedVisitorName);
+} else {
+  showVisitorGate();
+}
 
