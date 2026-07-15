@@ -1509,3 +1509,49 @@ body.page-is-leaving .footer {
   color: var(--muted);
   line-height: 1.75;
 }
+
+/* Home hero photo slideshow */
+.hero-photo-slider {
+  aspect-ratio: 4 / 5;
+}
+
+.hero-photo-slider .profile-photo {
+  height: 100%;
+  transition: opacity 0.42s ease, transform 0.42s ease, filter 0.42s ease;
+}
+
+.hero-photo-slider.is-changing .profile-photo {
+  opacity: 0.18;
+  transform: scale(1.015);
+  filter: saturate(0.9);
+}
+
+.hero-photo-dots {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+}
+
+.hero-photo-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 0 10px rgba(115, 199, 191, 0.28);
+  transition: width 0.24s ease, background-color 0.24s ease;
+}
+
+.hero-photo-dots span.active {
+  width: 20px;
+  background: rgba(216, 185, 106, 0.92);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-photo-slider .profile-photo,
+  .hero-photo-dots span {
+    transition: none;
+  }
+}

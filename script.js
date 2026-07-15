@@ -133,3 +133,100 @@ if ("IntersectionObserver" in window) {
   revealItems.forEach((item) => item.classList.add("is-visible"));
 }
 
+
+const heroPhotoSlider = document.getElementById("heroPhotoSlider");
+const heroProfilePhoto = document.getElementById("heroProfilePhoto");
+const heroPhotoCaption = document.getElementById("heroPhotoCaption");
+const heroPhotoDots = document.getElementById("heroPhotoDots");
+
+const heroPhotoSlides = [
+  {
+    src: "assets/images/profile-photo.jpg",
+    alt: "Ricvaldy Timotius Tarigan saat kegiatan lapangan berbasis teknologi",
+    caption: "Field learning and engineering practice."
+  },
+  {
+    src: "assets/images/petrocup-award.jpg",
+    alt: "Ricvaldy memegang penghargaan Juara 1 PETROCUP Paper Competition 2025",
+    caption: "PETROCUP Paper Competition 2025."
+  },
+  {
+    src: "assets/images/research-school-award.jpg",
+    alt: "Ricvaldy memegang piala dan sertifikat Juara 2 Research School 2 FK 2025",
+    caption: "Research School 2 FK 2025."
+  },
+  {
+    src: "assets/images/ews-final-collaboration.jpg",
+    alt: "Tim proyek EWS bersama penjahit setelah implementasi alat sensor",
+    caption: "EWS assistive sensor project."
+  },
+  {
+    src: "assets/images/ews-pic-session.jpg",
+    alt: "Ricvaldy sebagai PIC EWS dalam diskusi proyek sensor",
+    caption: "Project coordination and discussion."
+  }
+];
+
+if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && heroPhotoSlides.length > 1) {
+  let activeHeroPhoto = 0;
+  let heroPhotoTimer = null;
+
+  heroPhotoSlides.slice(1).forEach((slide) => {
+    const image = new Image();
+    image.src = slide.src;
+  });
+
+  heroPhotoSlides.forEach((_, index) => {
+    const dot = document.createElement("span");
+    dot.classList.toggle("active", index === activeHeroPhoto);
+    heroPhotoDots.appendChild(dot);
+  });
+
+  function updateHeroPhotoDots() {
+    heroPhotoDots.querySelectorAll("span").forEach((dot, index) => {
+      dot.classList.toggle("active", index === activeHeroPhoto);
+    });
+  }
+
+  function showHeroPhoto(nextIndex) {
+    if (nextIndex === activeHeroPhoto) return;
+
+    const nextSlide = heroPhotoSlides[nextIndex];
+    heroPhotoSlider.classList.add("is-changing");
+
+    window.setTimeout(() => {
+      heroProfilePhoto.src = nextSlide.src;
+      heroProfilePhoto.alt = nextSlide.alt;
+      heroPhotoCaption.textContent = nextSlide.caption;
+      activeHeroPhoto = nextIndex;
+      updateHeroPhotoDots();
+      heroPhotoSlider.classList.remove("is-changing");
+    }, 260);
+  }
+
+  function startHeroPhotoSlider() {
+    if (heroPhotoTimer) return;
+
+    heroPhotoTimer = window.setInterval(() => {
+      const nextIndex = (activeHeroPhoto + 1) % heroPhotoSlides.length;
+      showHeroPhoto(nextIndex);
+    }, 4200);
+  }
+
+  function stopHeroPhotoSlider() {
+    window.clearInterval(heroPhotoTimer);
+    heroPhotoTimer = null;
+  }
+
+  heroPhotoSlider.addEventListener("mouseenter", stopHeroPhotoSlider);
+  heroPhotoSlider.addEventListener("mouseleave", startHeroPhotoSlider);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      stopHeroPhotoSlider();
+    } else {
+      startHeroPhotoSlider();
+    }
+  });
+
+  startHeroPhotoSlider();
+}
