@@ -318,8 +318,10 @@ if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && 
 
 
 const VISITOR_NAME_KEY = "portfolio-visitor-name";
+const VISITOR_EMAIL_KEY = "portfolio-visitor-email";
 const VISITOR_LIST_KEY = "portfolio-visitor-list";
-const VISITOR_ID_KEY = "portfolio-visitor-id";
+const PENDING_VISITOR_NAME_KEY = "portfolio-pending-visitor-name";
+const PENDING_VISITOR_EMAIL_KEY = "portfolio-pending-visitor-email";
 const FIREBASE_VISITOR_COLLECTION = "portfolioVisitors";
 
 function readVisitorList() {
@@ -340,7 +342,24 @@ function saveVisitorList(visitors) {
 }
 
 function cleanVisitorName(name) {
-  return name.replace(/\s+/g, " ").trim().slice(0, 28);
+  return String(name).replace(/\s+/g, " ").trim().slice(0, 28);
+}
+
+function cleanVisitorEmail(email) {
+  return String(email).replace(/\s+/g, "").trim().toLowerCase().slice(0, 80);
+}
+
+function isValidEmailFormat(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
+
+function maskEmail(email) {
+  const cleanEmail = cleanVisitorEmail(email);
+  const [name, domain] = cleanEmail.split("@");
+  if (!name || !domain) return "email terverifikasi";
+
+  const visibleName = name.length <= 2 ? name[0] || "" : `${name[0]}${name[1]}`;
+  return `${visibleName}${"*".repeat(Math.min(Math.max(name.length - visibleName.length, 2), 6))}@${domain}`;
 }
 
 function escapeHtml(value) {
@@ -350,43 +369,6 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-}
-
-function getOrCreateVisitorId() {
-  try {
-    const existingId = localStorage.getItem(VISITOR_ID_KEY);
-    if (existingId) return existingId;
-
-    const newId = (window.crypto && window.crypto.randomUUID)
-      ? window.crypto.randomUUID()
-      : `visitor-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-
-    localStorage.setItem(VISITOR_ID_KEY, newId);
-    return newId;
-  } catch (error) {
-    return `visitor-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  }
-}
-
-function registerLocalVisitor(name) {
-  const cleanName = cleanVisitorName(name);
-  if (!cleanName) return readLocalVisitorPayload();
-
-  const visitors = readVisitorList();
-  const existingVisitor = visitors.find((visitor) => visitor.name.toLowerCase() === cleanName.toLowerCase());
-
-  if (existingVisitor) {
-    existingVisitor.lastSeenAt = new Date().toISOString();
-  } else {
-    visitors.unshift({
-      name: cleanName,
-      lastSeenAt: new Date().toISOString()
-    });
-  }
-
-  const limitedVisitors = visitors.slice(0, 12);
-  saveVisitorList(limitedVisitors);
-  return readLocalVisitorPayload();
 }
 
 function readLocalVisitorPayload() {
@@ -399,6 +381,31 @@ function readLocalVisitorPayload() {
   };
 }
 
+function registerLocalVisitor(name, email) {
+  const cleanName = cleanVisitorName(name);
+  const cleanEmail = cleanVisitorEmail(email);
+  if (!cleanName || !isValidEmailFormat(cleanEmail)) return readLocalVisitorPayload();
+
+  const visitors = readVisitorList();
+  const existingVisitor = visitors.find((visitor) => cleanVisitorEmail(visitor.email) === cleanEmail);
+
+  if (existingVisitor) {
+    existingVisitor.name = cleanName;
+    existingVisitor.email = cleanEmail;
+    existingVisitor.lastSeenAt = new Date().toISOString();
+  } else {
+    visitors.unshift({
+      name: cleanName,
+      email: cleanEmail,
+      lastSeenAt: new Date().toISOString()
+    });
+  }
+
+  const limitedVisitors = visitors.slice(0, 12);
+  saveVisitorList(limitedVisitors);
+  return readLocalVisitorPayload();
+}
+
 function getSavedVisitorName() {
   try {
     return cleanVisitorName(localStorage.getItem(VISITOR_NAME_KEY) || "");
@@ -407,9 +414,47 @@ function getSavedVisitorName() {
   }
 }
 
-function saveVisitorName(name) {
+function getSavedVisitorEmail() {
   try {
-    localStorage.setItem(VISITOR_NAME_KEY, name);
+    return cleanVisitorEmail(localStorage.getItem(VISITOR_EMAIL_KEY) || "");
+  } catch (error) {
+    return "";
+  }
+}
+
+function saveVerifiedVisitorIdentity(name, email) {
+  try {
+    localStorage.setItem(VISITOR_NAME_KEY, cleanVisitorName(name));
+    localStorage.setItem(VISITOR_EMAIL_KEY, cleanVisitorEmail(email));
+  } catch (error) {
+    return;
+  }
+}
+
+function savePendingVisitorIdentity(name, email) {
+  try {
+    localStorage.setItem(PENDING_VISITOR_NAME_KEY, cleanVisitorName(name));
+    localStorage.setItem(PENDING_VISITOR_EMAIL_KEY, cleanVisitorEmail(email));
+  } catch (error) {
+    return;
+  }
+}
+
+function getPendingVisitorIdentity() {
+  try {
+    return {
+      name: cleanVisitorName(localStorage.getItem(PENDING_VISITOR_NAME_KEY) || ""),
+      email: cleanVisitorEmail(localStorage.getItem(PENDING_VISITOR_EMAIL_KEY) || "")
+    };
+  } catch (error) {
+    return { name: "", email: "" };
+  }
+}
+
+function clearPendingVisitorIdentity() {
+  try {
+    localStorage.removeItem(PENDING_VISITOR_NAME_KEY);
+    localStorage.removeItem(PENDING_VISITOR_EMAIL_KEY);
   } catch (error) {
     return;
   }
@@ -462,16 +507,21 @@ function renderVisitorBoard(currentVisitorName, payload) {
   visitorBoard.id = "visitorBoard";
 
   const visitorItems = visitors.length
-    ? visitors.map((visitor) => `<li><span>${escapeHtml(visitor.name)}</span><small>${escapeHtml(formatVisitorTime(visitor.lastSeenAt))}</small></li>`).join("")
+    ? visitors.map((visitor) => {
+      const meta = visitor.email
+        ? `${maskEmail(visitor.email)} - ${formatVisitorTime(visitor.lastSeenAt)}`
+        : formatVisitorTime(visitor.lastSeenAt);
+      return `<li><span>${escapeHtml(visitor.name)}</span><small>${escapeHtml(meta)}</small></li>`;
+    }).join("")
     : "<li><span>Belum ada nama</span><small>-</small></li>";
 
   visitorBoard.innerHTML = `
     <div>
-      <span class="visitor-board-label">Visitor Log</span>
-      <strong>${visitorPayload.count} orang pernah masuk</strong>
+      <span class="visitor-board-label">Verified Visitor Log</span>
+      <strong>${visitorPayload.count} email aktif pernah masuk</strong>
       <p>Halo, ${escapeHtml(currentVisitorName)}. Data pengunjung tersimpan di ${escapeHtml(visitorPayload.source)}.</p>
     </div>
-    <ul aria-label="Daftar nama pengunjung">
+    <ul aria-label="Daftar nama pengunjung terverifikasi">
       ${visitorItems}
     </ul>
   `;
@@ -483,13 +533,21 @@ function renderVisitorBoard(currentVisitorName, payload) {
 
 const localVisitorStore = {
   source: "browser ini",
-  async register(name) {
-    return registerLocalVisitor(name);
+  requiresEmailVerification: false,
+  async register(name, email) {
+    return registerLocalVisitor(name, email);
   },
   async read() {
     return readLocalVisitorPayload();
   }
 };
+
+function getCleanReturnUrl() {
+  const returnUrl = new URL(window.location.href);
+  returnUrl.search = "";
+  returnUrl.hash = "";
+  return returnUrl.toString();
+}
 
 async function createFirebaseVisitorStore() {
   try {
@@ -503,14 +561,35 @@ async function createFirebaseVisitorStore() {
 
     if (!firebaseEnabled) return null;
 
-    const [appModule, firestoreModule] = await Promise.all([
+    const [appModule, firestoreModule, authModule] = await Promise.all([
       import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"),
-      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js")
+      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js")
     ]);
 
     const app = appModule.initializeApp(firebaseConfig);
+    const auth = authModule.getAuth(app);
     const db = firestoreModule.getFirestore(app);
     const visitorsCollection = firestoreModule.collection(db, FIREBASE_VISITOR_COLLECTION);
+
+    function getCurrentUserOnce() {
+      return new Promise((resolve) => {
+        const timeoutId = window.setTimeout(() => {
+          unsubscribe();
+          resolve(auth.currentUser);
+        }, 1500);
+
+        const unsubscribe = authModule.onAuthStateChanged(auth, (user) => {
+          window.clearTimeout(timeoutId);
+          unsubscribe();
+          resolve(user);
+        }, () => {
+          window.clearTimeout(timeoutId);
+          unsubscribe();
+          resolve(auth.currentUser);
+        });
+      });
+    }
 
     async function readFirebaseVisitors() {
       const latestVisitorsQuery = firestoreModule.query(
@@ -533,6 +612,7 @@ async function createFirebaseVisitorStore() {
 
         return {
           name: cleanVisitorName(String(data.name || "Pengunjung")),
+          email: cleanVisitorEmail(String(data.email || "")),
           lastSeenAt
         };
       });
@@ -544,43 +624,117 @@ async function createFirebaseVisitorStore() {
       };
     }
 
+    async function saveFirebaseVisitor(user, name) {
+      const cleanName = cleanVisitorName(name);
+      const cleanEmail = cleanVisitorEmail(user.email || "");
+      if (!user.uid || !cleanName || !isValidEmailFormat(cleanEmail)) {
+        throw new Error("Data pengunjung belum valid.");
+      }
+
+      const visitorDocument = firestoreModule.doc(db, FIREBASE_VISITOR_COLLECTION, user.uid);
+      await firestoreModule.setDoc(visitorDocument, {
+        name: cleanName,
+        email: cleanEmail,
+        lastSeenAt: firestoreModule.serverTimestamp()
+      }, { merge: true });
+
+      saveVerifiedVisitorIdentity(cleanName, cleanEmail);
+      return readFirebaseVisitors();
+    }
+
+    async function sendVisitorEmailLink(name, email) {
+      const cleanName = cleanVisitorName(name);
+      const cleanEmail = cleanVisitorEmail(email);
+      if (!cleanName || !isValidEmailFormat(cleanEmail)) {
+        throw new Error("Masukkan nama dan email yang valid.");
+      }
+
+      const actionCodeSettings = {
+        url: getCleanReturnUrl(),
+        handleCodeInApp: true
+      };
+
+      await authModule.sendSignInLinkToEmail(auth, cleanEmail, actionCodeSettings);
+      savePendingVisitorIdentity(cleanName, cleanEmail);
+
+      return {
+        pendingVerification: true,
+        email: cleanEmail,
+        source: "Firebase Authentication"
+      };
+    }
+
+    async function completeEmailLinkSignIn() {
+      if (!authModule.isSignInWithEmailLink(auth, window.location.href)) return null;
+
+      const pendingVisitor = getPendingVisitorIdentity();
+      if (!pendingVisitor.email || !isValidEmailFormat(pendingVisitor.email)) {
+        throw new Error("Email verifikasi tidak ditemukan di browser ini. Ulangi proses masuk dari halaman utama.");
+      }
+
+      const result = await authModule.signInWithEmailLink(auth, pendingVisitor.email, window.location.href);
+      const visitorName = pendingVisitor.name || cleanVisitorName(pendingVisitor.email.split("@")[0]);
+      const payload = await saveFirebaseVisitor(result.user, visitorName);
+      clearPendingVisitorIdentity();
+      window.history.replaceState({}, document.title, window.location.pathname);
+
+      return {
+        name: visitorName,
+        email: pendingVisitor.email,
+        payload
+      };
+    }
+
     return {
       source: "Firebase Firestore",
-      async register(name) {
-        const visitorId = getOrCreateVisitorId();
-        const visitorDocument = firestoreModule.doc(db, FIREBASE_VISITOR_COLLECTION, visitorId);
+      requiresEmailVerification: true,
+      completeEmailLinkSignIn,
+      async register(name, email) {
+        const cleanEmail = cleanVisitorEmail(email);
+        const currentUser = await getCurrentUserOnce();
 
-        await firestoreModule.setDoc(visitorDocument, {
-          name: cleanVisitorName(name),
-          lastSeenAt: firestoreModule.serverTimestamp()
-        }, { merge: true });
+        if (currentUser && cleanVisitorEmail(currentUser.email || "") === cleanEmail) {
+          return saveFirebaseVisitor(currentUser, name);
+        }
 
-        return readFirebaseVisitors();
+        return sendVisitorEmailLink(name, email);
       },
       read: readFirebaseVisitors
     };
   } catch (error) {
-    console.warn("Firebase visitor log belum aktif, menggunakan penyimpanan lokal.", error);
+    console.warn("Firebase visitor verification belum aktif, menggunakan penyimpanan lokal.", error);
     return null;
   }
 }
 
 let activeVisitorStore = localVisitorStore;
 
-async function registerAndRenderVisitor(visitorName) {
+async function registerAndRenderVisitor(visitorName, visitorEmail) {
   try {
-    const payload = await activeVisitorStore.register(visitorName);
+    const payload = await activeVisitorStore.register(visitorName, visitorEmail);
+    if (payload && payload.pendingVerification) return payload;
+
     renderVisitorBoard(visitorName, payload);
+    return { completed: true, payload };
   } catch (error) {
-    console.warn("Gagal menyimpan ke Firebase, memakai penyimpanan lokal.", error);
-    activeVisitorStore = localVisitorStore;
-    renderVisitorBoard(visitorName, await activeVisitorStore.register(visitorName));
+    console.warn("Gagal memproses visitor.", error);
+    throw error;
   }
+}
+
+function updateVisitorGateStatus(message, tone = "info") {
+  const status = document.getElementById("visitorGateStatus");
+  if (!status) return;
+
+  status.textContent = message;
+  status.hidden = false;
+  status.dataset.tone = tone;
 }
 
 function showVisitorGate() {
   if (document.getElementById("visitorGate")) return;
 
+  const firebaseMode = activeVisitorStore.requiresEmailVerification;
   const visitorGate = document.createElement("section");
   visitorGate.className = "visitor-gate";
   visitorGate.id = "visitorGate";
@@ -589,15 +743,18 @@ function showVisitorGate() {
   visitorGate.setAttribute("aria-labelledby", "visitorGateTitle");
   visitorGate.innerHTML = `
     <form class="visitor-gate-card" id="visitorGateForm">
-      <span class="visitor-gate-kicker">Welcome</span>
-      <h2 id="visitorGateTitle">Masuk sebagai siapa?</h2>
-      <p>Tulis nama singkat kamu dulu sebelum melihat portofolio ini.</p>
-      <label for="visitorNameInput">Nama</label>
-      <div class="visitor-gate-input-row">
+      <span class="visitor-gate-kicker">Verified Entry</span>
+      <h2 id="visitorGateTitle">Masuk dengan email aktif</h2>
+      <p>${firebaseMode ? "Isi nama dan email aktif. Link verifikasi akan dikirim ke email kamu sebelum website terbuka." : "Firebase belum aktif, jadi email hanya dicek formatnya di browser ini."}</p>
+      <div class="visitor-gate-fields">
+        <label for="visitorNameInput">Nama</label>
         <input id="visitorNameInput" name="visitorName" type="text" maxlength="28" autocomplete="name" placeholder="Contoh: Ricvaldy" required />
-        <button type="submit">Masuk</button>
+        <label for="visitorEmailInput">Email aktif</label>
+        <input id="visitorEmailInput" name="visitorEmail" type="email" maxlength="80" autocomplete="email" placeholder="nama@email.com" required />
       </div>
-      <small>Jika Firebase sudah dikonfigurasi, nama pengunjung akan tersimpan global.</small>
+      <button class="visitor-gate-submit" type="submit">${firebaseMode ? "Kirim Link Verifikasi" : "Masuk"}</button>
+      <p class="visitor-gate-status" id="visitorGateStatus" hidden></p>
+      <small>${firebaseMode ? "Email asal-asalan tidak bisa masuk karena harus membuka link dari inbox." : "Aktifkan Firebase Authentication Email Link agar email benar-benar diverifikasi."}</small>
     </form>
   `;
 
@@ -606,6 +763,7 @@ function showVisitorGate() {
 
   const visitorNameInput = document.getElementById("visitorNameInput");
   const visitorGateForm = document.getElementById("visitorGateForm");
+  const submitButton = visitorGateForm?.querySelector("button[type='submit']");
 
   window.setTimeout(() => visitorNameInput?.focus(), 100);
 
@@ -614,25 +772,65 @@ function showVisitorGate() {
 
     const formData = new FormData(visitorGateForm);
     const visitorName = cleanVisitorName(String(formData.get("visitorName") || ""));
-    if (!visitorName) return;
+    const visitorEmail = cleanVisitorEmail(String(formData.get("visitorEmail") || ""));
 
-    saveVisitorName(visitorName);
-    await registerAndRenderVisitor(visitorName);
+    if (!visitorName || !isValidEmailFormat(visitorEmail)) {
+      updateVisitorGateStatus("Nama dan email harus valid.", "error");
+      return;
+    }
 
-    visitorGate.classList.add("is-leaving");
-    window.setTimeout(() => {
-      visitorGate.remove();
-      document.body.classList.remove("visitor-gate-open");
-    }, 420);
+    submitButton.disabled = true;
+    updateVisitorGateStatus(firebaseMode ? "Mengirim link verifikasi ke email..." : "Memproses data pengunjung...", "info");
+
+    try {
+      const result = await registerAndRenderVisitor(visitorName, visitorEmail);
+
+      if (result && result.pendingVerification) {
+        updateVisitorGateStatus(`Link verifikasi sudah dikirim ke ${maskEmail(visitorEmail)}. Buka email itu untuk masuk.`, "success");
+        submitButton.disabled = false;
+        return;
+      }
+
+      saveVerifiedVisitorIdentity(visitorName, visitorEmail);
+      visitorGate.classList.add("is-leaving");
+      window.setTimeout(() => {
+        visitorGate.remove();
+        document.body.classList.remove("visitor-gate-open");
+      }, 420);
+    } catch (error) {
+      updateVisitorGateStatus(error.message || "Gagal memverifikasi email. Coba lagi.", "error");
+      submitButton.disabled = false;
+    }
   });
 }
 
 async function initializeVisitorFeature() {
   activeVisitorStore = await createFirebaseVisitorStore() || localVisitorStore;
 
+  if (activeVisitorStore.completeEmailLinkSignIn) {
+    try {
+      const emailLinkResult = await activeVisitorStore.completeEmailLinkSignIn();
+      if (emailLinkResult) {
+        renderVisitorBoard(emailLinkResult.name, emailLinkResult.payload);
+        return;
+      }
+    } catch (error) {
+      showVisitorGate();
+      updateVisitorGateStatus(error.message || "Link verifikasi tidak valid. Ulangi proses masuk.", "error");
+      return;
+    }
+  }
+
   const savedVisitorName = getSavedVisitorName();
-  if (savedVisitorName) {
-    await registerAndRenderVisitor(savedVisitorName);
+  const savedVisitorEmail = getSavedVisitorEmail();
+
+  if (savedVisitorName && isValidEmailFormat(savedVisitorEmail)) {
+    if (activeVisitorStore.requiresEmailVerification) {
+      const payload = await activeVisitorStore.read();
+      renderVisitorBoard(savedVisitorName, payload);
+    } else {
+      await registerAndRenderVisitor(savedVisitorName, savedVisitorEmail);
+    }
   } else {
     showVisitorGate();
   }

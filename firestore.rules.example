@@ -6,11 +6,14 @@ service cloud.firestore {
       allow read: if true;
 
       allow create, update: if
-        visitorId.matches('^[A-Za-z0-9_-]{16,80}$') &&
-        request.resource.data.keys().hasOnly(['name', 'lastSeenAt']) &&
+        request.auth != null &&
+        visitorId == request.auth.uid &&
+        request.resource.data.keys().hasOnly(['name', 'email', 'lastSeenAt']) &&
         request.resource.data.name is string &&
         request.resource.data.name.size() > 0 &&
         request.resource.data.name.size() <= 28 &&
+        request.resource.data.email is string &&
+        request.resource.data.email == request.auth.token.email &&
         request.resource.data.lastSeenAt is timestamp;
 
       allow delete: if false;
