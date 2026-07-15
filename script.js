@@ -69,6 +69,35 @@ if (themeToggle) {
     saveTheme(nextTheme);
   });
 }
+if (navPanel && themeToggle) {
+  const jakartaClock = document.createElement("div");
+  jakartaClock.className = "jakarta-clock";
+  jakartaClock.setAttribute("aria-label", "Waktu Jakarta, Indonesia");
+  jakartaClock.innerHTML = `
+    <span>Jakarta</span>
+    <strong id="jakartaClockTime">--:--:--</strong>
+    <small>WIB</small>
+  `;
+  navPanel.insertBefore(jakartaClock, themeToggle);
+
+  const jakartaClockTime = document.getElementById("jakartaClockTime");
+  const jakartaTimeFormatter = new Intl.DateTimeFormat("id-ID", {
+    timeZone: "Asia/Jakarta",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  });
+
+  function updateJakartaClock() {
+    if (!jakartaClockTime) return;
+
+    jakartaClockTime.textContent = jakartaTimeFormatter.format(new Date()).replace(/\./g, ":");
+  }
+
+  updateJakartaClock();
+  window.setInterval(updateJakartaClock, 1000);
+}
 
 function updateBackToTop() {
   if (!backToTop) return;
@@ -257,4 +286,5 @@ if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && 
 
   startHeroPhotoSlider();
 }
+
 

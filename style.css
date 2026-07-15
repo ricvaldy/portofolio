@@ -1785,3 +1785,54 @@ body {
     filter: none;
   }
 }
+
+/* Jakarta realtime clock */
+.jakarta-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid rgba(115, 199, 191, 0.28);
+  border-radius: 8px;
+  background: rgba(16, 32, 51, 0.08);
+  color: var(--muted);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 18px rgba(115, 199, 191, 0.08);
+  white-space: nowrap;
+}
+
+.jakarta-clock span,
+.jakarta-clock small {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.jakarta-clock strong {
+  color: var(--heading);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 1180px) {
+  .jakarta-clock span {
+    display: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .jakarta-clock {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .jakarta-clock span {
+    display: inline;
+  }
+}
