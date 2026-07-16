@@ -44,7 +44,14 @@ if (menuToggle && navPanel) {
 
 const currentPage = document.body.dataset.page;
 navLinks.forEach((link) => {
-  link.classList.toggle("active", link.dataset.page === currentPage);
+  const isCurrentPage = link.dataset.page === currentPage;
+
+  link.classList.toggle("active", isCurrentPage);
+  if (isCurrentPage) {
+    link.setAttribute("aria-current", "page");
+  } else {
+    link.removeAttribute("aria-current");
+  }
   link.addEventListener("click", closeMenu);
 });
 
@@ -154,29 +161,49 @@ function shouldAnimateNavigation(link, event) {
   const url = new URL(link.href, window.location.href);
   if (url.origin !== window.location.origin) return false;
   if (url.pathname === window.location.pathname && url.hash) return false;
+  if (url.pathname === window.location.pathname && !url.hash) return false;
 
   return true;
 }
+
+const transitionDestinations = {
+  "index.html": { label: "Home", index: "01", color: "#0066cc" },
+  "about.html": { label: "About", index: "02", color: "#147d64" },
+  "skills.html": { label: "Skills", index: "03", color: "#5669c9" },
+  "experience.html": { label: "Experience", index: "04", color: "#0f7f8a" },
+  "achievements.html": { label: "Achievements", index: "05", color: "#9a6700" },
+  "projects.html": { label: "Projects", index: "06", color: "#b44d3f" },
+  "contact.html": { label: "Contact", index: "07", color: "#59636f" }
+};
 
 const pageTransition = document.createElement("div");
 pageTransition.className = "page-transition";
 pageTransition.setAttribute("aria-hidden", "true");
 pageTransition.innerHTML = `
   <div class="page-transition-panel">
-    <span class="page-transition-kicker">Opening</span>
+    <span class="page-transition-kicker">Menuju halaman</span>
     <strong class="page-transition-title">Portfolio</strong>
-    <span class="page-transition-line"></span>
+    <span class="page-transition-meta">
+      <span class="page-transition-index">01</span>
+      <span>Ricvaldy Portfolio</span>
+    </span>
   </div>
 `;
 document.body.appendChild(pageTransition);
 
 const pageTransitionTitle = pageTransition.querySelector(".page-transition-title");
+const pageTransitionIndex = pageTransition.querySelector(".page-transition-index");
 
-function getTransitionLabel(link) {
-  const label = link.textContent.trim();
-  if (label) return label;
+function getTransitionDestination(link) {
+  const url = new URL(link.href, window.location.href);
+  const fileName = url.pathname.split("/").pop() || "index.html";
+  const fallbackLabel = link.textContent.trim() || "Portfolio";
 
-  return "Portfolio";
+  return transitionDestinations[fileName] || {
+    label: fallbackLabel,
+    index: "RT",
+    color: "#0066cc"
+  };
 }
 
 document.addEventListener("click", (event) => {
@@ -187,16 +214,35 @@ document.addEventListener("click", (event) => {
   event.preventDefault();
   closeMenu();
 
+  const destination = getTransitionDestination(link);
+  const pointerX = event.clientX > 0 ? event.clientX : window.innerWidth / 2;
+  const pointerY = event.clientY > 0 ? event.clientY : window.innerHeight / 2;
+
+  pageTransition.style.setProperty("--transition-x", `${pointerX}px`);
+  pageTransition.style.setProperty("--transition-y", `${pointerY}px`);
+  pageTransition.style.setProperty("--transition-color", destination.color);
+
   if (pageTransitionTitle) {
-    pageTransitionTitle.textContent = getTransitionLabel(link);
+    pageTransitionTitle.textContent = destination.label;
+  }
+
+  if (pageTransitionIndex) {
+    pageTransitionIndex.textContent = destination.index;
   }
 
   pageTransition.classList.add("is-active");
   document.body.classList.add("page-is-leaving");
 
+  const transitionDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 80 : 720;
+
   window.setTimeout(() => {
     window.location.href = link.href;
-  }, 780);
+  }, transitionDelay);
+});
+
+window.addEventListener("pageshow", () => {
+  pageTransition.classList.remove("is-active");
+  document.body.classList.remove("page-is-leaving");
 });
 
 if ("IntersectionObserver" in window) {
@@ -226,27 +272,27 @@ const heroPhotoSlides = [
   {
     src: "assets/images/profile-photo.jpg",
     alt: "Ricvaldy Timotius Tarigan saat kegiatan lapangan berbasis teknologi",
-    caption: "Field learning and engineering practice."
+    caption: "Pembelajaran lapangan dan praktik engineering."
   },
   {
     src: "assets/images/petrocup-award.jpg",
     alt: "Ricvaldy memegang penghargaan Juara 1 PETROCUP Paper Competition 2025",
-    caption: "PETROCUP Paper Competition 2025."
+    caption: "Juara 1 PETROCUP Paper Competition 2025."
   },
   {
     src: "assets/images/research-school-award.jpg",
     alt: "Ricvaldy memegang piala dan sertifikat Juara 2 Research School 2 FK 2025",
-    caption: "Research School 2 FK 2025."
+    caption: "Juara 2 Research School 2 FK 2025."
   },
   {
     src: "assets/images/ews-final-collaboration.jpg",
     alt: "Tim proyek EWS bersama penjahit setelah implementasi alat sensor",
-    caption: "EWS assistive sensor project."
+    caption: "Proyek sensor asistif bersama EWS."
   },
   {
     src: "assets/images/ews-pic-session.jpg",
     alt: "Ricvaldy sebagai PIC EWS dalam diskusi proyek sensor",
-    caption: "Project coordination and discussion."
+    caption: "Koordinasi dan diskusi proyek EWS."
   }
 ];
 
