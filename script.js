@@ -133,9 +133,17 @@ if (navPanel && themeToggle) {
   window.setInterval(updateJakartaClock, 1000);
 }
 
+let backToTopFrame = null;
+
 function updateBackToTop() {
   if (!backToTop) return;
   backToTop.classList.toggle("show", window.scrollY > 500);
+  backToTopFrame = null;
+}
+
+function scheduleBackToTopUpdate() {
+  if (backToTopFrame !== null) return;
+  backToTopFrame = window.requestAnimationFrame(updateBackToTop);
 }
 
 if (backToTop) {
@@ -146,8 +154,7 @@ if (backToTop) {
     });
   });
 
-  window.addEventListener("scroll", updateBackToTop);
-  updateBackToTop();
+  window.addEventListener("scroll", scheduleBackToTopUpdate, { passive: true });
 }
 
 function shouldAnimateNavigation(link, event) {
@@ -265,32 +272,38 @@ if ("IntersectionObserver" in window) {
 
 const heroPhotoSlider = document.getElementById("heroPhotoSlider");
 const heroProfilePhoto = document.getElementById("heroProfilePhoto");
+const heroProfileSource = document.getElementById("heroProfileSource");
 const heroPhotoCaption = document.getElementById("heroPhotoCaption");
 const heroPhotoDots = document.getElementById("heroPhotoDots");
 
 const heroPhotoSlides = [
   {
-    src: "assets/images/profile-photo.jpg",
+    src: "assets/images/profile-photo.webp",
+    fallback: "assets/images/profile-photo.jpg",
     alt: "Ricvaldy Timotius Tarigan saat kegiatan lapangan berbasis teknologi",
     caption: "Pembelajaran lapangan dan praktik engineering."
   },
   {
-    src: "assets/images/petrocup-award.jpg",
+    src: "assets/images/petrocup-award.webp",
+    fallback: "assets/images/petrocup-award.jpg",
     alt: "Ricvaldy memegang penghargaan Juara 1 PETROCUP Paper Competition 2025",
     caption: "Juara 1 PETROCUP Paper Competition 2025."
   },
   {
-    src: "assets/images/research-school-award.jpg",
+    src: "assets/images/research-school-award.webp",
+    fallback: "assets/images/research-school-award.jpg",
     alt: "Ricvaldy memegang piala dan sertifikat Juara 2 Research School 2 FK 2025",
     caption: "Juara 2 Research School 2 FK 2025."
   },
   {
-    src: "assets/images/ews-final-collaboration.jpg",
+    src: "assets/images/ews-final-collaboration.webp",
+    fallback: "assets/images/ews-final-collaboration.jpg",
     alt: "Tim proyek EWS bersama penjahit setelah implementasi alat sensor",
     caption: "Proyek sensor asistif bersama EWS."
   },
   {
-    src: "assets/images/ews-pic-session.jpg",
+    src: "assets/images/ews-pic-session.webp",
+    fallback: "assets/images/ews-pic-session.jpg",
     alt: "Ricvaldy sebagai PIC EWS dalam diskusi proyek sensor",
     caption: "Koordinasi dan diskusi proyek EWS."
   }
@@ -299,11 +312,7 @@ const heroPhotoSlides = [
 if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && heroPhotoSlides.length > 1) {
   let activeHeroPhoto = 0;
   let heroPhotoTimer = null;
-
-  heroPhotoSlides.slice(1).forEach((slide) => {
-    const image = new Image();
-    image.src = slide.src;
-  });
+  let heroPhotoLoading = false;
 
   heroPhotoSlides.forEach((_, index) => {
     const dot = document.createElement("span");
@@ -318,19 +327,38 @@ if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && 
   }
 
   function showHeroPhoto(nextIndex) {
-    if (nextIndex === activeHeroPhoto) return;
+    if (nextIndex === activeHeroPhoto || heroPhotoLoading) return;
 
     const nextSlide = heroPhotoSlides[nextIndex];
-    heroPhotoSlider.classList.add("is-changing");
+    const nextImage = new Image();
+    heroPhotoLoading = true;
 
-    window.setTimeout(() => {
-      heroProfilePhoto.src = nextSlide.src;
+    nextImage.addEventListener("load", () => {
+      heroPhotoSlider.classList.add("is-changing");
+
+      window.setTimeout(() => {
+        if (heroProfileSource) heroProfileSource.srcset = nextSlide.src;
+        heroProfilePhoto.src = nextSlide.fallback;
+        heroProfilePhoto.alt = nextSlide.alt;
+        heroPhotoCaption.textContent = nextSlide.caption;
+        activeHeroPhoto = nextIndex;
+        updateHeroPhotoDots();
+        heroPhotoSlider.classList.remove("is-changing");
+        heroPhotoLoading = false;
+      }, 220);
+    }, { once: true });
+
+    nextImage.addEventListener("error", () => {
+      heroProfilePhoto.src = nextSlide.fallback;
       heroProfilePhoto.alt = nextSlide.alt;
       heroPhotoCaption.textContent = nextSlide.caption;
       activeHeroPhoto = nextIndex;
       updateHeroPhotoDots();
       heroPhotoSlider.classList.remove("is-changing");
-    }, 260);
+      heroPhotoLoading = false;
+    }, { once: true });
+
+    nextImage.src = nextSlide.src;
   }
 
   function startHeroPhotoSlider() {
@@ -353,11 +381,11 @@ if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && 
     if (document.hidden) {
       stopHeroPhotoSlider();
     } else {
-      startHeroPhotoSlider();
+      if (!document.body.classList.contains("visitor-gate-open")) startHeroPhotoSlider();
     }
   });
 
-  startHeroPhotoSlider();
+  document.addEventListener("portfolio:visitor-ready", startHeroPhotoSlider);
 }
 
 
@@ -753,7 +781,56 @@ async function createFirebaseVisitorStore() {
   }
 }
 
+async function hasFirebaseVisitorConfig() {
+  try {
+    const configModule = await import("./firebase-config.js");
+    const firebaseConfig = configModule.firebaseConfig;
+    return configModule.firebaseEnabled !== false
+      && firebaseConfig
+      && firebaseConfig.apiKey
+      && firebaseConfig.projectId
+      && !String(firebaseConfig.apiKey).startsWith("ISI_");
+  } catch (error) {
+    return false;
+  }
+}
+
+let firebaseVisitorStorePromise = null;
+
+async function getFirebaseVisitorStore() {
+  if (!firebaseVisitorStorePromise) {
+    firebaseVisitorStorePromise = createFirebaseVisitorStore();
+  }
+
+  const store = await firebaseVisitorStorePromise;
+  if (!store) throw new Error("Layanan verifikasi email sedang tidak tersedia. Coba lagi beberapa saat.");
+  return store;
+}
+
+const lazyFirebaseVisitorStore = {
+  source: "Firebase Firestore",
+  requiresEmailVerification: true,
+  async completeEmailLinkSignIn() {
+    return (await getFirebaseVisitorStore()).completeEmailLinkSignIn();
+  },
+  async register(name, email) {
+    return (await getFirebaseVisitorStore()).register(name, email);
+  },
+  async read() {
+    return (await getFirebaseVisitorStore()).read();
+  }
+};
+
 let activeVisitorStore = localVisitorStore;
+
+function announceVisitorReady() {
+  document.dispatchEvent(new CustomEvent("portfolio:visitor-ready"));
+}
+
+function hasEmailLinkParameters() {
+  const parameters = new URLSearchParams(window.location.search);
+  return parameters.get("mode") === "signIn" && parameters.has("oobCode");
+}
 
 async function registerAndRenderVisitor(visitorName, visitorEmail) {
   try {
@@ -842,6 +919,7 @@ function showVisitorGate() {
       window.setTimeout(() => {
         visitorGate.remove();
         document.body.classList.remove("visitor-gate-open");
+        announceVisitorReady();
       }, 420);
     } catch (error) {
       updateVisitorGateStatus(error.message || "Gagal memverifikasi email. Coba lagi.", "error");
@@ -851,13 +929,15 @@ function showVisitorGate() {
 }
 
 async function initializeVisitorFeature() {
-  activeVisitorStore = await createFirebaseVisitorStore() || localVisitorStore;
+  const firebaseMode = await hasFirebaseVisitorConfig();
+  activeVisitorStore = firebaseMode ? lazyFirebaseVisitorStore : localVisitorStore;
 
-  if (activeVisitorStore.completeEmailLinkSignIn) {
+  if (firebaseMode && hasEmailLinkParameters()) {
     try {
       const emailLinkResult = await activeVisitorStore.completeEmailLinkSignIn();
       if (emailLinkResult) {
         renderVisitorBoard(emailLinkResult.name, emailLinkResult.payload);
+        announceVisitorReady();
         return;
       }
     } catch (error) {
@@ -871,11 +951,21 @@ async function initializeVisitorFeature() {
   const savedVisitorEmail = getSavedVisitorEmail();
 
   if (savedVisitorName && isValidEmailFormat(savedVisitorEmail)) {
-    if (activeVisitorStore.requiresEmailVerification) {
-      const payload = await activeVisitorStore.read();
-      renderVisitorBoard(savedVisitorName, payload);
+    if (firebaseMode) {
+      renderVisitorBoard(savedVisitorName, readLocalVisitorPayload());
+      announceVisitorReady();
+
+      window.setTimeout(async () => {
+        try {
+          const payload = await activeVisitorStore.read();
+          renderVisitorBoard(savedVisitorName, payload);
+        } catch (error) {
+          console.warn("Daftar pengunjung belum dapat diperbarui.", error);
+        }
+      }, 2500);
     } else {
       await registerAndRenderVisitor(savedVisitorName, savedVisitorEmail);
+      announceVisitorReady();
     }
   } else {
     showVisitorGate();
