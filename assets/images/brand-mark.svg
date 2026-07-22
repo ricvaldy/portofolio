@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
   <defs>
     <linearGradient id="mark-gradient" x1="8" y1="5" x2="57" y2="61" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#081A33"/>
-      <stop offset="0.54" stop-color="#064A8C"/>
-      <stop offset="1" stop-color="#0086D8"/>
+      <stop stop-color="#0A3D6D"/>
+      <stop offset="0.54" stop-color="#056DB6"/>
+      <stop offset="1" stop-color="#12A9E8"/>
     </linearGradient>
     <linearGradient id="mark-glow" x1="10" y1="8" x2="50" y2="54" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#7DE3FF" stop-opacity="0.32"/>
+      <stop stop-color="#A4EEFF" stop-opacity="0.42"/>
       <stop offset="1" stop-color="#7DE3FF" stop-opacity="0"/>
     </linearGradient>
   </defs>
