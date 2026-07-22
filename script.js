@@ -272,38 +272,32 @@ if ("IntersectionObserver" in window) {
 
 const heroPhotoSlider = document.getElementById("heroPhotoSlider");
 const heroProfilePhoto = document.getElementById("heroProfilePhoto");
-const heroProfileSource = document.getElementById("heroProfileSource");
 const heroPhotoCaption = document.getElementById("heroPhotoCaption");
 const heroPhotoDots = document.getElementById("heroPhotoDots");
 
 const heroPhotoSlides = [
   {
-    src: "assets/images/profile-photo.webp",
-    fallback: "assets/images/profile-photo.jpg",
+    src: "assets/images/profile-photo.jpg",
     alt: "Ricvaldy Timotius Tarigan saat kegiatan lapangan berbasis teknologi",
     caption: "Pembelajaran lapangan dan praktik engineering."
   },
   {
-    src: "assets/images/petrocup-award.webp",
-    fallback: "assets/images/petrocup-award.jpg",
+    src: "assets/images/petrocup-award.jpg",
     alt: "Ricvaldy memegang penghargaan Juara 1 PETROCUP Paper Competition 2025",
     caption: "Juara 1 PETROCUP Paper Competition 2025."
   },
   {
-    src: "assets/images/research-school-award.webp",
-    fallback: "assets/images/research-school-award.jpg",
+    src: "assets/images/research-school-award.jpg",
     alt: "Ricvaldy memegang piala dan sertifikat Juara 2 Research School 2 FK 2025",
     caption: "Juara 2 Research School 2 FK 2025."
   },
   {
-    src: "assets/images/ews-final-collaboration.webp",
-    fallback: "assets/images/ews-final-collaboration.jpg",
+    src: "assets/images/ews-final-collaboration.jpg",
     alt: "Tim proyek EWS bersama penjahit setelah implementasi alat sensor",
     caption: "Proyek sensor asistif bersama EWS."
   },
   {
-    src: "assets/images/ews-pic-session.webp",
-    fallback: "assets/images/ews-pic-session.jpg",
+    src: "assets/images/ews-pic-session.jpg",
     alt: "Ricvaldy sebagai PIC EWS dalam diskusi proyek sensor",
     caption: "Koordinasi dan diskusi proyek EWS."
   }
@@ -330,15 +324,15 @@ if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && 
     if (nextIndex === activeHeroPhoto || heroPhotoLoading) return;
 
     const nextSlide = heroPhotoSlides[nextIndex];
-    const nextImage = new Image();
     heroPhotoLoading = true;
+
+    const nextImage = new Image();
 
     nextImage.addEventListener("load", () => {
       heroPhotoSlider.classList.add("is-changing");
 
       window.setTimeout(() => {
-        if (heroProfileSource) heroProfileSource.srcset = nextSlide.src;
-        heroProfilePhoto.src = nextSlide.fallback;
+        heroProfilePhoto.src = nextSlide.src;
         heroProfilePhoto.alt = nextSlide.alt;
         heroPhotoCaption.textContent = nextSlide.caption;
         activeHeroPhoto = nextIndex;
@@ -349,12 +343,6 @@ if (heroPhotoSlider && heroProfilePhoto && heroPhotoCaption && heroPhotoDots && 
     }, { once: true });
 
     nextImage.addEventListener("error", () => {
-      heroProfilePhoto.src = nextSlide.fallback;
-      heroProfilePhoto.alt = nextSlide.alt;
-      heroPhotoCaption.textContent = nextSlide.caption;
-      activeHeroPhoto = nextIndex;
-      updateHeroPhotoDots();
-      heroPhotoSlider.classList.remove("is-changing");
       heroPhotoLoading = false;
     }, { once: true });
 

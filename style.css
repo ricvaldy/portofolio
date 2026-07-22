@@ -1823,11 +1823,21 @@ body.page-is-leaving .footer {
   transition: transform 0.24s ease, box-shadow 0.24s ease;
 }
 
-.brand-mark img {
+.brand-mark svg {
   width: 23px;
   height: 23px;
   display: block;
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1.2);
+}
+
+.brand-mark circle {
+  fill: #ffffff;
+  stroke: none;
 }
 
 .brand:hover .brand-mark,
@@ -1838,14 +1848,14 @@ body.page-is-leaving .footer {
     0 12px 28px rgba(var(--page-accent-rgb, 0, 102, 204), 0.32);
 }
 
-.brand:hover .brand-mark img,
-.brand:focus-visible .brand-mark img {
+.brand:hover .brand-mark svg,
+.brand:focus-visible .brand-mark svg {
   transform: scale(1.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .brand-mark,
-  .brand-mark img {
+  .brand-mark svg {
     transition: none;
   }
 }
